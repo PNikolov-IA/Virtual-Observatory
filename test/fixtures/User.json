@@ -1,0 +1,9 @@
+[
+  {
+      "id": 1,
+      "email": "test@telerikacademy.com",
+      "password": "$2b$10$Gl4kSdKlZP79VNd9RUWTke4XYcW5WUvkTjw3blSZyWBnsCNB7XU9W",
+      "avatarUrl": "public\\images\\default.png",
+      "isAdmin": true
+  }
+]
