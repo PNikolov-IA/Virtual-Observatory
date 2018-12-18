@@ -9,40 +9,63 @@ import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './../../interfaces/jwt-payload';
 import { validate } from 'class-validator';
+import { Role } from 'src/data/entities/role.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-
-    ) { }
+  ) { }
 
   async registerUser(user: UserRegisterDTO) {
     const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
 
     if (userFound) {
-      throw new Error('User not found!');
+      throw new Error('Email already in use');
     }
 
     user.password = await bcrypt.hash(user.password, 10);
-    await this.usersRepository.create(user);
 
-    const result = await this.usersRepository.save([user]);
+    const userToAdd: User = new User();
+
+    userToAdd.email = user.email;
+    userToAdd.password = user.password;
+    userToAdd.firstName = user.firstName;
+    userToAdd.lastName = user.lastName;
+
+    let count: number;
+    await this.usersRepository.count({}).then(c => count = c);
+
+    if (!count) {
+      const role: Role = new Role();
+      role.name = 'admin';
+      userToAdd.roles.push(role);
+    }
+
+    await this.usersRepository.create(userToAdd);
+
+    const result = await this.usersRepository.save(userToAdd);
 
     return result;
   }
 
   async validateUser(payload: JwtPayload): Promise<GetUserDTO> {
-    const userFound: any = await this.usersRepository.findOne({ where: { email: payload.email } });
+    const userFound: User = await this.usersRepository.findOne({ where: { email: payload.email } });
     return userFound;
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
-    const userFound: GetUserDTO = await this.usersRepository.findOne({ select: ['email', 'isAdmin', 'password'], where: { email: user.email } });
+    const userFound: GetUserDTO = await this.usersRepository
+      .findOne({
+        select: ['email', 'password'],
+        relations: ['roles'],
+        where: { email: user.email },
+      });
 
     if (userFound) {
       const result = await bcrypt.compare(user.password, userFound.password);
+
       if (result) {
         return userFound;
       }

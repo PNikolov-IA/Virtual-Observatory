@@ -14,8 +14,12 @@ export class AuthService {
 
   public async signIn(user: UserLoginDTO): Promise<string> {
     const userFound: GetUserDTO = await this.usersService.signIn(user);
+
     if (userFound) {
-      return this.jwtService.sign({ email: userFound.email, isAdmin: userFound.isAdmin });
+      const roles: string[] = userFound.roles.map(x => x.name);
+
+      return this.jwtService
+        .sign({ email: userFound.email, roles: [ roles ] });
     } else {
       return null;
     }

@@ -1,16 +1,16 @@
 import { IsString, Length, Matches, IsOptional, IsEmail } from 'class-validator';
-import { Optional } from '@nestjs/common';
 
 export class UserRegisterDTO {
-
   @IsEmail()
   email: string;
 
   @IsString()
-  @Matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}/)
+  @Length(6, 10, {message: `The length of the password should be between 6-10 characters`})
   password: string;
 
-  @Optional()
-  avatarUrl: string;
+  @Length(2, 20, {message: 'The length of the first name should be between 2-20 characters'})
+  firstName: string;
 
+  @Length(2, 20, {message: 'The length of the last name should be between 2-20 characters'})
+  lastName: string;
 }
