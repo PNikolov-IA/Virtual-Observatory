@@ -18,8 +18,7 @@ export class AuthService {
     if (userFound) {
       const roles: string[] = userFound.roles.map(x => x.name);
 
-      return this.jwtService
-        .sign({ email: userFound.email, roles: [ roles ] });
+      return this.jwtService.sign({ email: userFound.email, roles });
     } else {
       return null;
     }

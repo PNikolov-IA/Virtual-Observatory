@@ -24,7 +24,7 @@ export class User {
   @Length(2, 20, { message: 'The length of the last name should be between 2-20 characters' })
   lastName: string;
 
-  @ManyToMany(type => Role, role => role.users)
+  @ManyToMany(type => Role, role => role.users, { cascade: true })
   @JoinTable({ name: 'users_roles' })
   roles: Role[];
 

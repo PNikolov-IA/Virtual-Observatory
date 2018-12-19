@@ -34,12 +34,10 @@ export class UsersService {
     userToAdd.firstName = user.firstName;
     userToAdd.lastName = user.lastName;
 
-    let count: number;
-    await this.usersRepository.count({}).then(c => count = c);
-
-    if (!count) {
+    if (!(await this.usersRepository.count({}))) {
       const role: Role = new Role();
       role.name = 'admin';
+      userToAdd.roles = [];
       userToAdd.roles.push(role);
     }
 
