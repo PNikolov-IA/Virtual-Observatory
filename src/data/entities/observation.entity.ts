@@ -6,8 +6,8 @@ import { AstronomicalObject } from './object.entity';
 
 @Entity('observations')
 export class Observation {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column()
     // @IsDate()

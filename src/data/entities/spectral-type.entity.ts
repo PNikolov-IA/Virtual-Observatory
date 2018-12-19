@@ -4,13 +4,12 @@ import { AstronomicalObject } from './object.entity';
 
 @Entity('spectral_types')
 export class SpectralType {
-
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   @IsString()
-  @Length(2, 20, {message: 'Spectral type name is too short. The length should be between 2-20 characters'})
+  @Length(2, 20, { message: 'Spectral type name is too short. The length should be between 2-20 characters' })
   type: string;
 
   @OneToMany(type => AstronomicalObject, object => object.spectralType)

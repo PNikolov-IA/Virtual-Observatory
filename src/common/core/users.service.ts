@@ -1,15 +1,12 @@
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { Repository, TransactionManager, EntityManager, Transaction } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { User } from './../../data/entities/user.entity';
-import { InjectRepository, InjectEntityManager } from '@nestjs/typeorm';
-
+import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './../../interfaces/jwt-payload';
-import { validate } from 'class-validator';
-import { Role } from 'src/data/entities/role.entity';
 
 @Injectable()
 export class UsersService {
@@ -34,13 +31,6 @@ export class UsersService {
     userToAdd.firstName = user.firstName;
     userToAdd.lastName = user.lastName;
 
-    if (!(await this.usersRepository.count({}))) {
-      const role: Role = new Role();
-      role.name = 'admin';
-      userToAdd.roles = [];
-      userToAdd.roles.push(role);
-    }
-
     await this.usersRepository.create(userToAdd);
 
     const result = await this.usersRepository.save(userToAdd);
@@ -55,11 +45,7 @@ export class UsersService {
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
     const userFound: GetUserDTO = await this.usersRepository
-      .findOne({
-        select: ['email', 'password'],
-        relations: ['roles'],
-        where: { email: user.email },
-      });
+      .findOne({ select: ['email', 'password', 'isAdmin'], where: { email: user.email } });
 
     if (userFound) {
       const result = await bcrypt.compare(user.password, userFound.password);

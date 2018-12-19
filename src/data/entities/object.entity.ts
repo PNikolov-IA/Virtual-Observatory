@@ -6,9 +6,8 @@ import { SpectralType } from './spectral-type.entity';
 
 @Entity('objects')
 export class AstronomicalObject {
-  // const validator: Validator = new Validator();
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   @IsString()
@@ -18,7 +17,6 @@ export class AstronomicalObject {
   @Column()
   @IsString()
   @Length(8, 10, {each: true, message: 'The object name is too short. The length should be between 3-20 characters'})
-  // @CoordinatesAlpha.validate(); validator.validate(coordinates): Validator;
   coordinates: string;
 
   @Column({nullable: true})

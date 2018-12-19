@@ -1,12 +1,11 @@
-import { Column, PrimaryGeneratedColumn, Entity, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, OneToMany } from 'typeorm';
 import { IsEmail, Length, IsString } from 'class-validator';
-import { Role } from './role.entity';
 import { Observation } from './observation.entity';
 
 @Entity({ name: 'users' })
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   @IsEmail()
@@ -24,10 +23,9 @@ export class User {
   @Length(2, 20, { message: 'The length of the last name should be between 2-20 characters' })
   lastName: string;
 
-  @ManyToMany(type => Role, role => role.users, { cascade: true })
-  @JoinTable({ name: 'users_roles' })
-  roles: Role[];
+  @Column({ default: false })
+  isAdmin: boolean;
 
-  @OneToMany(type => Observation, observation => observation.observer && observation.operator)
+  @OneToMany(() => Observation, observation => observation.observer && observation.operator)
   observations: Observation[];
 }

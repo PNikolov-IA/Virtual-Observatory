@@ -19,13 +19,6 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) { }
 
-  @Get()
-  @Roles('admin')
-  @UseGuards(AuthGuard(), RolesGuard)
-  root(): string {
-    return 'root';
-  }
-
   @Post('login')
   async sign(@Body(new ValidationPipe({
     transform: true,

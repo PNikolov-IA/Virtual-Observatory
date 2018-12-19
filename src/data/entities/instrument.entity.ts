@@ -4,8 +4,8 @@ import { Observation } from './observation.entity';
 
 @Entity('instruments')
 export class Instrument {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column()
     @Length(2, 50, { message: 'The name is too short. The length should be between 2-50 characters' })

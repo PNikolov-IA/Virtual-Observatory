@@ -4,9 +4,8 @@ import { Length, IsString } from 'class-validator';
 
 @Entity('object_types')
 export class ObjectType {
-
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   @IsString()

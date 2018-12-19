@@ -16,9 +16,7 @@ export class AuthService {
     const userFound: GetUserDTO = await this.usersService.signIn(user);
 
     if (userFound) {
-      const roles: string[] = userFound.roles.map(x => x.name);
-
-      return this.jwtService.sign({ email: userFound.email, roles });
+      return this.jwtService.sign({ email: userFound.email, isAdmin: userFound.isAdmin });
     } else {
       return null;
     }

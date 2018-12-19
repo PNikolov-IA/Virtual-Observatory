@@ -10,4 +10,5 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   await app.listen(app.get(ConfigService).port);
 }
+
 bootstrap();

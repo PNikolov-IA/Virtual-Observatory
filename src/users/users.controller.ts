@@ -1,7 +1,7 @@
 import { AuthGuard } from '@nestjs/passport';
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { UsersService } from './../common/core/users.service';
-import { RolesGuard } from 'src/common';
+import { RolesGuard, Roles, AdminGuard } from 'src/common';
 
 @Controller('users')
 export class UsersController {
@@ -11,7 +11,8 @@ export class UsersController {
   ) { }
 
   @Get()
-  @UseGuards(AuthGuard())
+  @Roles('admin')
+  @UseGuards(AuthGuard(), AdminGuard)
   all() {
     return this.usersService.getAll();
   }
