@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CoreModule } from './common/core/core.module';
 import { DatabaseModule } from './database/database.module';
+import { HomeModule } from './home/home.module';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { DatabaseModule } from './database/database.module';
     DatabaseModule,
     UsersModule,
     CoreModule,
-    DatabaseModule,
+    HomeModule,
   ],
   controllers: [],
   providers: [],
