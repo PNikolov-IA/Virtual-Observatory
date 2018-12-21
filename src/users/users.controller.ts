@@ -1,5 +1,5 @@
 import { AuthGuard } from '@nestjs/passport';
-import { Controller, Get, UseGuards, Param, HttpStatus, Put, Req, HttpCode, Response, Res } from '@nestjs/common';
+import { Controller, Get, UseGuards, Param, HttpStatus, Put, Res } from '@nestjs/common';
 import { UsersService } from './../common/core/users.service';
 import { AdminGuard } from 'src/common';
 import { User } from 'src/data/entities/user.entity';
@@ -12,26 +12,40 @@ export class UsersController {
 
   @Get()
   @UseGuards(AuthGuard(), AdminGuard)
-  @HttpCode(HttpStatus.OK)
-  all() {
-    return this.usersService.getAll();
+  async all(@Res() response) {
+
+    try {
+      const users = await this.usersService.getAll();
+      return response.status(HttpStatus.OK).json(users);
+
+    } catch (error) {
+      error.message = 'Not users found.';
+      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
+
+    }
+
   }
 
   @Get(':id')
   @UseGuards(AuthGuard(), AdminGuard)
-  @HttpCode(HttpStatus.OK)
-  async getDetails(@Param('id') id: string) {
+  async getDetails(@Param('id') id: string, @Res() response): Promise<User> {
+
     try {
       const user: User = await this.usersService.getUserById(+id);
-      return user;
+      return response.status(HttpStatus.OK).json(user);
+
     } catch (error) {
-      return error;
+      error.message = 'No such user.';
+      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
+
     }
+
   }
 
   @Put(':id')
   @UseGuards(AuthGuard(), AdminGuard)
   async changeRole(@Param('id') id: string, @Res() response) {
+
     try {
       const message: string = await this.usersService.changeRole(+id);
       return response.status(HttpStatus.OK).json(message);
@@ -40,5 +54,6 @@ export class UsersController {
       error.message = 'No such user id.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
     }
+
   }
 }

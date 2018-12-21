@@ -23,4 +23,5 @@ export class ObservationInsertDTO {
     @IsNumber()
     @Min(1)
     objectId: number;
+
 }

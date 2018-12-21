@@ -16,6 +16,7 @@ export class UsersService {
   ) { }
 
   async registerUser(user: UserRegisterDTO) {
+
     const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
 
     if (userFound) {
@@ -31,19 +32,30 @@ export class UsersService {
     userToAdd.firstName = user.firstName;
     userToAdd.lastName = user.lastName;
 
-    await this.usersRepository.create(userToAdd);
-
+    this.usersRepository.create(userToAdd);
     const result = await this.usersRepository.save(userToAdd);
 
-    return result;
+    if (result) {
+      return result;
+    }
+
+    return null;
+
   }
 
   async validateUser(payload: JwtPayload): Promise<GetUserDTO> {
+
     const userFound: User = await this.usersRepository.findOne({ where: { email: payload.email } });
-    return userFound;
+
+    if (userFound) {
+      return userFound;
+    }
+
+    return null;
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
+
     const userFound: GetUserDTO = await this.usersRepository
       .findOne({ select: ['email', 'password', 'isAdmin'], where: { email: user.email } });
 
@@ -56,30 +68,58 @@ export class UsersService {
     }
 
     return null;
+
   }
 
-  async getAll() {
-    return this.usersRepository.find({});
+  getAll() {
+
+    const result = this.usersRepository.find({});
+
+    if (result) {
+      return result;
+    }
+
+    return null;
+
   }
 
   async getUserById(id: number) {
-    return await this.usersRepository.findOneOrFail({ where: { id } });
+
+    const result = await this.usersRepository.findOneOrFail({ where: { id } });
+
+    if (result) {
+      return result;
+    }
+
+    return null;
+
   }
 
   async changeRole(id: number) {
     // check for current admin
     const userToChange: User = await this.usersRepository.findOneOrFail({ where: { id } });
 
+    if (!userToChange) {
+      throw new Error();
+    }
+
     let state = '';
     if (userToChange.isAdmin) {
       userToChange.isAdmin = false;
       state = 'Admin role was changed to user.';
+
     } else {
       userToChange.isAdmin = true;
       state = 'User role was changed to admin.';
     }
 
-    this.usersRepository.save(userToChange);
-    return state;
+    await this.usersRepository.save(userToChange);
+
+    if (state) {
+      return state;
+    }
+
+    return null;
+
   }
 }
