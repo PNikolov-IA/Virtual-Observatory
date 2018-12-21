@@ -1,3 +1,4 @@
+import { ObservationsModule } from './observation/observations.module';
 import { ConfigModule } from './config/config.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -15,6 +16,7 @@ import { HomeModule } from './home/home.module';
     UsersModule,
     CoreModule,
     HomeModule,
+    ObservationsModule,
   ],
   controllers: [],
   providers: [],

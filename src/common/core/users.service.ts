@@ -1,7 +1,7 @@
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, Inject, Res } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './../../data/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -64,5 +64,22 @@ export class UsersService {
 
   async getUserById(id: number) {
     return await this.usersRepository.findOneOrFail({ where: { id } });
+  }
+
+  async changeRole(id: number) {
+    // check for current admin
+    const userToChange: User = await this.usersRepository.findOneOrFail({ where: { id } });
+
+    let state = '';
+    if (userToChange.isAdmin) {
+      userToChange.isAdmin = false;
+      state = 'Admin role was changed to user.';
+    } else {
+      userToChange.isAdmin = true;
+      state = 'User role was changed to admin.';
+    }
+
+    this.usersRepository.save(userToChange);
+    return state;
   }
 }
