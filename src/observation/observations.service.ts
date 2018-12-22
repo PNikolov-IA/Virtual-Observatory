@@ -75,11 +75,11 @@ export class ObservationsService {
             order: { id: 'ASC' },
         });
 
-        if (retrievedFilteredObservations) {
-            return retrievedFilteredObservations;
+        if (!retrievedFilteredObservations) {
+            throw new NotFoundException();
         }
 
-        return null;
+        return retrievedFilteredObservations;
 
     }
 
