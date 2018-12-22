@@ -31,7 +31,7 @@ export class ObservationsController {
       // Select by query
       try {
         const retrievedObservations = await this.observationsService
-          .retrieveFilteredObservations(query.objectIdentifier, query.coordinates, query.instrumentName);
+          .retrieveFilteredObservations(query.objectIdentifier);
         return response.status(HttpStatus.OK).json({ message: 'Successfully filtered observations retrieve.', data: retrievedObservations });
 
       } catch (error) {

@@ -67,21 +67,13 @@ export class ObservationsService {
         return retrievedObservation;
     }
 
-    async retrieveFilteredObservations(objectIdentifier: string, coordinates: string, instrumentName: string) {
+    async retrieveFilteredObservations(objectIdentifier: string) {
 
         const retrievedFilteredObservations = await this.observationsRepository.find({
             relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
-            // where: {object: {id: 1},  instrument: { id: 1} },
-            // where: { object: { identifier: objectIdentifier } } ,
-            // where: { observation: {object: { identifier: objectIdentifier } } } ,
+            where: { object: { identifier: objectIdentifier } } ,  // It is not working properly!
             order: { id: 'ASC' },
         });
-        // console.log('2: ', objectIdentifier);
-        // const retrievedFilteredObservations = await getRepository(Observation)
-        //     .createQueryBuilder('observation')
-        //     .where('observation.object = :object', { object: object.identifier === objectIdentifier })
-        //     .where('observation.object.identifier = :identifier', { identifier: objectIdentifier })
-        //     // .where('observation.coordinates = :coordinates', { coordinates });
 
         if (retrievedFilteredObservations) {
             return retrievedFilteredObservations;
