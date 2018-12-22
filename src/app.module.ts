@@ -6,6 +6,7 @@ import { CoreModule } from './common/core/core.module';
 import { DatabaseModule } from './database/database.module';
 import { Module, HttpModule } from '@nestjs/common';
 import { HomeModule } from './home/home.module';
+import { InstrumentsModule } from './instrument/instruments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { HomeModule } from './home/home.module';
     CoreModule,
     HomeModule,
     ObservationsModule,
+    InstrumentsModule,
   ],
   controllers: [],
   providers: [],
