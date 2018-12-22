@@ -31,5 +31,5 @@ export class Observation {
     object: AstronomicalObject;
 
     @ManyToMany(type => Project, project => project.observations)
-    projects: Observation[];
+    projects: Project[];
 }

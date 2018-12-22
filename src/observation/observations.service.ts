@@ -70,7 +70,7 @@ export class ObservationsService {
     async retrieveFilteredObservations(objectIdentifier: string) {
 
         const retrievedFilteredObservations = await this.observationsRepository.find({
-            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
+            relations: ['instrument', 'observer', 'operator', 'objects', 'projects'],
             where: { object: { identifier: objectIdentifier } } ,  // It is not working properly!
             order: { id: 'ASC' },
         });
