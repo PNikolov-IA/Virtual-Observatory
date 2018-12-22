@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ObservationInsertDTO } from '../models/observation/observation-insert.dto';
 import { User } from '../data/entities/user.entity';
 import { AstronomicalObject } from '../data/entities/object.entity';
-import { Result } from 'range-parser';
 
 @Injectable()
 export class ObservationsService {
@@ -48,7 +47,7 @@ export class ObservationsService {
     async retrieveObservations() {
 
         const retrievedObservations = await this.observationsRepository.find({
-            relations: ['instrument', 'observer', 'operator', 'object'],
+            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
             order: { id: 'ASC' },
         });
 
@@ -62,7 +61,7 @@ export class ObservationsService {
     async retrieveObservationById(id: number) {
 
         const retrievedObservation = await this.observationsRepository.findOneOrFail({
-            relations: ['instrument', 'observer', 'operator', 'object'],
+            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
             where: { id },
         });
         return retrievedObservation;
@@ -71,7 +70,7 @@ export class ObservationsService {
     async retrieveFilteredObservations(objectIdentifier: string, coordinates: string, instrumentName: string) {
 
         const retrievedFilteredObservations = await this.observationsRepository.find({
-            relations: ['instrument', 'observer', 'operator', 'object'],
+            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
             // where: {object: {id: 1},  instrument: { id: 1} },
             // where: { object: { identifier: objectIdentifier } } ,
             // where: { observation: {object: { identifier: objectIdentifier } } } ,

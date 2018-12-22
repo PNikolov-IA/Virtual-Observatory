@@ -1,5 +1,6 @@
+import { Project } from './project.entity';
 import { Column, PrimaryGeneratedColumn, Entity, ManyToOne, ManyToMany } from 'typeorm';
-import { IsDate, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { User } from './user.entity';
 import { Instrument } from './instrument.entity';
 import { AstronomicalObject } from './object.entity';
@@ -28,4 +29,7 @@ export class Observation {
 
     @ManyToOne(type => AstronomicalObject, object => object.observations)
     object: AstronomicalObject;
+
+    @ManyToMany(type => Project, project => project.observations)
+    projects: Observation[];
 }

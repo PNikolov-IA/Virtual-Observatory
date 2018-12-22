@@ -11,12 +11,12 @@ export class AstronomicalObject {
 
   @Column()
   @IsString()
-  @Length(3, 20, {message: 'The object name is too short. The length should be between 3-20 characters'})
+  @Length(3, 20, {message: 'The length should be between 3-20 characters'})
   identifier: string;
 
   @Column()
   @IsString()
-  @Length(8, 10, {each: true, message: 'The object name is too short. The length should be between 3-20 characters'})
+  @Length(8, 10, {each: true, message: 'The length should be between 3-20 characters'})
   coordinates: string;
 
   @Column({nullable: true})
