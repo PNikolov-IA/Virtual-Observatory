@@ -1,6 +1,6 @@
 import { IsString, Min } from 'class-validator';
 
-export class ObjectTypeInsertDTO {
+export class SpectralTypeInsertDTO {
 
     @IsString()
     @Min(2)

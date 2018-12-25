@@ -34,7 +34,7 @@ export class ObjectTypesController {
 
     try {
       const findedObjectType = await this.objectTypesService.getObjectTypeById(+id);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find instrument.', data: findedObjectType });
+      return response.status(HttpStatus.OK).json({ message: 'Successfully find object type.', data: findedObjectType });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find object type.';
@@ -53,7 +53,6 @@ export class ObjectTypesController {
       return response.status(HttpStatus.OK).json({ message: 'Successfully inserted.', data: insertedObjectType});
 
     } catch (error) {
-      error.message = 'Incorrect data input.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
@@ -66,7 +65,7 @@ export class ObjectTypesController {
 
     try {
       const alteredObjectType = await this.objectTypesService.alterObjectType(objectType);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully inserted.', data: alteredObjectType });
+      return response.status(HttpStatus.OK).json({ message: 'Successfully changed.', data: alteredObjectType });
 
     } catch (error) {
       error.message = 'Incorrect data input.';

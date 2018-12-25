@@ -40,6 +40,14 @@ export class ObjectTypesService {
 
     async insertObjectType(objectType: ObjectTypeInsertDTO): Promise<ObjectType> {
 
+        const findedObjectType: ObjectType[] = await this.findObjectType();
+
+        for (const elements of findedObjectType) {
+            if (elements.type === objectType.type) {
+                throw new BadRequestException('The object type already exist.');
+            }
+        }
+
         const objectTypeToInsert: ObjectType = new ObjectType();
         objectTypeToInsert.type = objectType.type;
 
@@ -47,22 +55,23 @@ export class ObjectTypesService {
         const result = await this.objectTypesRepository.save(objectTypeToInsert);
 
         if (!result) {
-            throw new BadRequestException();
+            throw new BadRequestException('Incorrect data input.');
         }
 
         return objectTypeToInsert;
 
     }
 
-    async alterObjectType(objectType: ObjectTypeAlterDTO) {
+    async alterObjectType(objectType: ObjectTypeAlterDTO): Promise<string> {
 
-        const findedObjectType: ObjectType[] = await this.objectTypesRepository.find();
+        const findedObjectType: ObjectType[] = await this.findObjectType();
 
         let findedType = false;
         for (const elements of findedObjectType) {
             if (elements.type === objectType.insertedType) {
                 elements.type = objectType.typeToAlter;
                 findedType = true;
+                break;
             }
         }
 
@@ -74,6 +83,18 @@ export class ObjectTypesService {
         }
 
         return objectType.typeToAlter;
+
+    }
+
+    findObjectType() {
+
+        const findedObjectType = this.objectTypesRepository.find();
+
+        if (!findedObjectType) {
+            throw new BadRequestException();
+        }
+
+        return findedObjectType;
 
     }
 
