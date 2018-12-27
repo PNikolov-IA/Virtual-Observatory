@@ -1,3 +1,4 @@
+import { ProjectsModule } from './projects/projects.module';
 import { ObservationsModule } from './observation/observations.module';
 import { ConfigModule } from './config/config.module';
 import { AuthModule } from './auth/auth.module';
@@ -23,6 +24,7 @@ import { SpectralTypesModule } from './spectralType/spectral-type.module';
     InstrumentsModule,
     ObjectTypesModule,
     SpectralTypesModule,
+    ProjectsModule,
   ],
   controllers: [],
   providers: [],

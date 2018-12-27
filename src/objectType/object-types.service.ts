@@ -17,32 +17,32 @@ export class ObjectTypesService {
 
     async getObjectTypes(): Promise<ObjectType[]> {
 
-        const getedObjectTypes = await this.objectTypesRepository.find();
+        const foundObjectTypes = await this.objectTypesRepository.find();
 
-        if (!getedObjectTypes) {
+        if (!foundObjectTypes) {
             throw new NotFoundException();
         }
 
-        return getedObjectTypes;
+        return foundObjectTypes;
 
     }
 
     async getObjectTypeById(id: number): Promise<ObjectType> {
 
-        const getedObjectType = await this.objectTypesRepository.findOneOrFail({ where: { id } });
+        const foundObjectType = await this.objectTypesRepository.findOneOrFail({ where: { id } });
 
-        if (!getedObjectType) {
+        if (!foundObjectType) {
             throw new NotFoundException();
         }
 
-        return getedObjectType;
+        return foundObjectType;
     }
 
     async insertObjectType(objectType: ObjectTypeInsertDTO): Promise<ObjectType> {
 
-        const findedObjectType: ObjectType[] = await this.findObjectType();
+        const foundObjectType: ObjectType[] = await this.findObjectType();
 
-        for (const elements of findedObjectType) {
+        for (const elements of foundObjectType) {
             if (elements.type === objectType.type) {
                 throw new BadRequestException('The object type already exist.');
             }
@@ -64,21 +64,21 @@ export class ObjectTypesService {
 
     async alterObjectType(objectType: ObjectTypeAlterDTO): Promise<string> {
 
-        const findedObjectType: ObjectType[] = await this.findObjectType();
+        const foundObjectType: ObjectType[] = await this.findObjectType();
 
-        let findedType = false;
-        for (const elements of findedObjectType) {
+        let foundType = false;
+        for (const elements of foundObjectType) {
             if (elements.type === objectType.insertedType) {
                 elements.type = objectType.typeToAlter;
-                findedType = true;
+                foundType = true;
                 break;
             }
         }
 
-        this.objectTypesRepository.create(findedObjectType);
-        const result = await this.objectTypesRepository.save(findedObjectType);
+        this.objectTypesRepository.create(foundObjectType);
+        const result = await this.objectTypesRepository.save(foundObjectType);
 
-        if (!result || !findedType) {
+        if (!result || !foundType) {
             throw new BadRequestException();
         }
 
@@ -88,13 +88,13 @@ export class ObjectTypesService {
 
     findObjectType() {
 
-        const findedObjectType = this.objectTypesRepository.find();
+        const foundObjectType = this.objectTypesRepository.find();
 
-        if (!findedObjectType) {
+        if (!foundObjectType) {
             throw new BadRequestException();
         }
 
-        return findedObjectType;
+        return foundObjectType;
 
     }
 

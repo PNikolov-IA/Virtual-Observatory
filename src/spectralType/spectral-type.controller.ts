@@ -17,8 +17,9 @@ export class SpectralTypesController {
   async getAll(@Res() response): Promise<string> {
 
     try {
-      const findedSpectralTypes = await this.spectralTypesService.getSpectralTypes();
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find all spectral types.', data: findedSpectralTypes });
+      const foundSpectralTypes = await this.spectralTypesService.getSpectralTypes();
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully find all spectral types.', data: foundSpectralTypes });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find the spectral types.';
@@ -33,12 +34,13 @@ export class SpectralTypesController {
   async getById(@Param('id') id: string, @Res() response): Promise<string> {
 
     try {
-      const findedSpectralType = await this.spectralTypesService.getSpectralTypeById(+id);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find spectral type.', data: findedSpectralType });
+      const foundSpectralType = await this.spectralTypesService.getSpectralTypeById(+id);
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully find spectral type.', data: foundSpectralType });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find spectral type.';
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
+      return response.status(HttpStatus.NOT_FOUND).json(error.message);
 
     }
 
@@ -50,7 +52,8 @@ export class SpectralTypesController {
 
     try {
       const insertedSpectralType = await this.spectralTypesService.insertSpectralType(spectralType);
-      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedSpectralType});
+      return response.status(HttpStatus.CREATED)
+        .json({ message: 'Successfully inserted.', data: insertedSpectralType });
 
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
@@ -65,7 +68,8 @@ export class SpectralTypesController {
 
     try {
       const alteredSpectralType = await this.spectralTypesService.alterSpectralType(spectralType);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully changed.', data: alteredSpectralType });
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully changed.', data: alteredSpectralType });
 
     } catch (error) {
       error.message = 'Incorrect data input.';

@@ -17,32 +17,32 @@ export class SpectralTypesService {
 
     async getSpectralTypes(): Promise<SpectralType[]> {
 
-        const getedSpectralTypes = await this.spectralTypesRepository.find();
+        const foundSpectralTypes = await this.spectralTypesRepository.find();
 
-        if (!getedSpectralTypes) {
+        if (!foundSpectralTypes) {
             throw new NotFoundException();
         }
 
-        return getedSpectralTypes;
+        return foundSpectralTypes;
 
     }
 
     async getSpectralTypeById(id: number): Promise<SpectralType> {
 
-        const getedSpectralType = await this.spectralTypesRepository.findOneOrFail({ where: { id } });
+        const foundSpectralType = await this.spectralTypesRepository.findOneOrFail({ where: { id } });
 
-        if (!getedSpectralType) {
+        if (!foundSpectralType) {
             throw new NotFoundException();
         }
 
-        return getedSpectralType;
+        return foundSpectralType;
     }
 
     async insertSpectralType(spectralType: SpectralTypeInsertDTO): Promise<SpectralType> {
 
-        const findedSpectralType: SpectralType[] = await this.findSpectralType();
+        const foundSpectralType: SpectralType[] = await this.findSpectralType();
 
-        for (const elements of findedSpectralType) {
+        for (const elements of foundSpectralType) {
             if (elements.type === spectralType.type) {
                 throw new BadRequestException('The object type already exist.');
             }
@@ -64,21 +64,21 @@ export class SpectralTypesService {
 
     async alterSpectralType(spectralType: SpectralTypeAlterDTO) {
 
-        const findedSpectralType: SpectralType[] = await this.spectralTypesRepository.find();
+        const foundSpectralType: SpectralType[] = await this.spectralTypesRepository.find();
 
-        let findedType = false;
-        for (const elements of findedSpectralType) {
+        let foundType = false;
+        for (const elements of foundSpectralType) {
             if (elements.type === spectralType.insertedType) {
                 elements.type = spectralType.typeToAlter;
-                findedType = true;
+                foundType = true;
                 break;
             }
         }
 
-        this.spectralTypesRepository.create(findedSpectralType);
-        const result = await this.spectralTypesRepository.save(findedSpectralType);
+        this.spectralTypesRepository.create(foundSpectralType);
+        const result = await this.spectralTypesRepository.save(foundSpectralType);
 
-        if (!result || !findedType) {
+        if (!result || !foundType) {
             throw new BadRequestException();
         }
 
@@ -88,13 +88,13 @@ export class SpectralTypesService {
 
     findSpectralType() {
 
-        const findedSpectralType = this.spectralTypesRepository.find();
+        const foundSpectralType = this.spectralTypesRepository.find();
 
-        if (!findedSpectralType) {
+        if (!foundSpectralType) {
             throw new BadRequestException();
         }
 
-        return findedSpectralType;
+        return foundSpectralType;
 
     }
 

@@ -34,25 +34,25 @@ export class InstrumentsService {
 
     async getInstruments(): Promise<Instrument[]> {
 
-        const getedInstruments = await this.instrumentsRepository.find();
+        const foundInstruments = await this.instrumentsRepository.find();
 
-        if (!getedInstruments) {
+        if (!foundInstruments) {
             throw new NotFoundException();
         }
 
-        return getedInstruments;
+        return foundInstruments;
 
     }
 
     async getInstrumentById(id: number): Promise<Instrument> {
 
-        const getedInstrument = await this.instrumentsRepository.findOneOrFail({ where: { id } });
+        const foundInstrument = await this.instrumentsRepository.findOneOrFail({ where: { id } });
 
-        if (!getedInstrument) {
+        if (!foundInstrument) {
             throw new NotFoundException();
         }
 
-        return getedInstrument;
+        return foundInstrument;
     }
 
 }

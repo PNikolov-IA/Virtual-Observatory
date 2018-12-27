@@ -17,8 +17,8 @@ export class ObjectTypesController {
   async getAll(@Res() response): Promise<string> {
 
     try {
-      const findedObjectTypes = await this.objectTypesService.getObjectTypes();
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find all object types.', data: findedObjectTypes });
+      const foundObjectTypes = await this.objectTypesService.getObjectTypes();
+      return response.status(HttpStatus.OK).json({ message: 'Successfully find all object types.', data: foundObjectTypes });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find the object types.';
@@ -33,8 +33,8 @@ export class ObjectTypesController {
   async getById(@Param('id') id: string, @Res() response): Promise<string> {
 
     try {
-      const findedObjectType = await this.objectTypesService.getObjectTypeById(+id);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find object type.', data: findedObjectType });
+      const foundObjectType = await this.objectTypesService.getObjectTypeById(+id);
+      return response.status(HttpStatus.OK).json({ message: 'Successfully find object type.', data: foundObjectType });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find object type.';

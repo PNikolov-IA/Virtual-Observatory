@@ -16,8 +16,8 @@ export class InstrumentsController {
   async getAll(@Res() response): Promise<string> {
 
     try {
-      const findedInstruments = await this.instrumentsService.getInstruments();
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find all instruments.', data: findedInstruments });
+      const foundInstruments = await this.instrumentsService.getInstruments();
+      return response.status(HttpStatus.OK).json({ message: 'Successfully find all instruments.', data: foundInstruments });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find the instruments.';
@@ -32,8 +32,8 @@ export class InstrumentsController {
   async getById(@Param('id') id: string, @Res() response): Promise<string> {
 
     try {
-      const findedInstrument = await this.instrumentsService.getInstrumentById(+id);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find instrument.', data: findedInstrument });
+      const foundInstrument = await this.instrumentsService.getInstrumentById(+id);
+      return response.status(HttpStatus.OK).json({ message: 'Successfully find instrument.', data: foundInstrument });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find instrument.';
