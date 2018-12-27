@@ -19,7 +19,7 @@ export class UsersController {
       return response.status(HttpStatus.OK).json(users);
 
     } catch (error) {
-      error.message = 'Not users found.';
+      error.message = 'No users found.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }

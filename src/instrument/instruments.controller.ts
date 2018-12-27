@@ -49,7 +49,7 @@ export class InstrumentsController {
 
     try {
       const insertedInstrument = await this.instrumentsService.insertInstrument(instrument);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully inserted.', data: insertedInstrument });
+      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedInstrument });
 
     } catch (error) {
       error.message = 'Incorrect data input.';
@@ -58,4 +58,5 @@ export class InstrumentsController {
     }
 
   }
+
 }

@@ -50,7 +50,7 @@ export class ObjectTypesController {
 
     try {
       const insertedObjectType = await this.objectTypesService.insertObjectType(objectType);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully inserted.', data: insertedObjectType});
+      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedObjectType});
 
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);

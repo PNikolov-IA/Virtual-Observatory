@@ -50,7 +50,7 @@ export class SpectralTypesController {
 
     try {
       const insertedSpectralType = await this.spectralTypesService.insertSpectralType(spectralType);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully inserted.', data: insertedSpectralType});
+      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedSpectralType});
 
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);

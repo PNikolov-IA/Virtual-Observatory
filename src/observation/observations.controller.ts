@@ -66,7 +66,7 @@ export class ObservationsController {
 
     try {
       const insertedObservation = await this.observationsService.insertObservation(observation);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully inserted.', data: insertedObservation });
+      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedObservation });
 
     } catch (error) {
       error.message = 'Incorrect data input.';
