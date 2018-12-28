@@ -1,4 +1,4 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, Put } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, Put, ParseIntPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ProjectsService } from './projects.service';
 import { ProjectInsertDTO } from '../models/project/project-insert.dto';
@@ -30,10 +30,10 @@ export class ProjectsController {
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id') id: string, @Res() response): Promise<string> {
+  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
 
     try {
-      const foundProject = await this.projectsService.getProjectById(+id);
+      const foundProject = await this.projectsService.getProjectById(id);
       return response.status(HttpStatus.OK)
         .json({ statusCode: HttpStatus.OK, status: 'OK', message: 'Successfully find the project.', data: foundProject });
 

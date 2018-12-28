@@ -1,7 +1,8 @@
+import { Length } from 'class-validator';
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';
-import { Injectable, HttpStatus, Inject, Res } from '@nestjs/common';
+import { Injectable, HttpStatus, Inject, Res, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './../../data/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,14 +18,17 @@ export class UsersService {
 
   async registerUser(user: UserRegisterDTO) {
 
-    const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
+    const anyUser = await this.usersRepository.find();
 
-    if (userFound) {
-      throw new Error('Email already in use');
+    if (!anyUser.length) {
+      const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
+
+      if (userFound) {
+        throw new Error('Email already in use');
+      }
     }
 
     user.password = await bcrypt.hash(user.password, 10);
-
     const userToAdd: User = new User();
 
     userToAdd.email = user.email;
@@ -32,14 +36,20 @@ export class UsersService {
     userToAdd.firstName = user.firstName;
     userToAdd.lastName = user.lastName;
 
+    if (anyUser.length === 0) {       // first user is admin
+      userToAdd.isAdmin = true;
+    } else {
+      userToAdd.isAdmin = false;
+    }
+
     this.usersRepository.create(userToAdd);
     const result = await this.usersRepository.save(userToAdd);
 
-    if (result) {
-      return result;
+    if (!result) {
+      throw new NotFoundException();
     }
 
-    return null;
+    return result;
 
   }
 
@@ -52,6 +62,7 @@ export class UsersService {
     }
 
     return null;
+
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {

@@ -1,4 +1,4 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InstrumentsService } from './instruments.service';
 import { InstrumentInsertDTO } from '../models/instrument/instrument-insert.dto';
@@ -29,10 +29,10 @@ export class InstrumentsController {
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id') id: string, @Res() response): Promise<string> {
+  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
 
     try {
-      const foundInstrument = await this.instrumentsService.getInstrumentById(+id);
+      const foundInstrument = await this.instrumentsService.getInstrumentById(id);
       return response.status(HttpStatus.OK).json({ message: 'Successfully find instrument.', data: foundInstrument });
 
     } catch (error) {

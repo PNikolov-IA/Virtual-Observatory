@@ -1,4 +1,4 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, Put } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, Put, ParseIntPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { SpectralTypesService } from './spectral-type.service';
 import { SpectralTypeAlterDTO } from '../models/spectralType/spectral-type-alter.dto';
@@ -31,10 +31,10 @@ export class SpectralTypesController {
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id') id: string, @Res() response): Promise<string> {
+  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
 
     try {
-      const foundSpectralType = await this.spectralTypesService.getSpectralTypeById(+id);
+      const foundSpectralType = await this.spectralTypesService.getSpectralTypeById(id);
       return response.status(HttpStatus.OK)
         .json({ message: 'Successfully find spectral type.', data: foundSpectralType });
 

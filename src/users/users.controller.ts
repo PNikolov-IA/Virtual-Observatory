@@ -3,6 +3,7 @@ import { Controller, Get, UseGuards, Param, HttpStatus, Put, Res } from '@nestjs
 import { UsersService } from './../common/core/users.service';
 import { AdminGuard } from 'src/common';
 import { User } from 'src/data/entities/user.entity';
+import { UserByIdPipe } from 'src/users/user-by-id.pipe';
 
 @Controller('users')
 export class UsersController {
@@ -28,10 +29,10 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(AuthGuard(), AdminGuard)
-  async getDetails(@Param('id') id: string, @Res() response): Promise<User> {
+  async getDetails(@Param('id', UserByIdPipe) id: number, @Res() response): Promise<User> {
 
     try {
-      const user: User = await this.usersService.getUserById(+id);
+      const user: User = await this.usersService.getUserById(id);
       return response.status(HttpStatus.OK).json(user);
 
     } catch (error) {

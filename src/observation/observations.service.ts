@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ObservationInsertDTO } from '../models/observation/observation-insert.dto';
 import { User } from '../data/entities/user.entity';
 import { AstronomicalObject } from '../data/entities/object.entity';
+import { Project } from '../data/entities/project.entity';
 
 @Injectable()
 export class ObservationsService {
@@ -24,6 +25,9 @@ export class ObservationsService {
         @InjectRepository(AstronomicalObject)
         private readonly objectRepository: Repository<AstronomicalObject>,
 
+        @InjectRepository(Project)
+        private readonly projectsRepository: Repository<Project>,
+
     ) { }
 
     async insertObservation(observation: ObservationInsertDTO) {
@@ -36,6 +40,7 @@ export class ObservationsService {
         observationToInsert.object = await this.objectRepository.findOneOrFail({ where: { id: observation.objectId } });
         observationToInsert.observer = await this.userRepository.findOneOrFail({ where: { id: observation.observerId } });
         observationToInsert.operator = await this.userRepository.findOneOrFail({ where: { id: observation.operatorId } });
+        observationToInsert.projects = await this.projectsRepository.find({ where: { id: observation.projectsId } });
 
         this.objectRepository.create(observationToInsert);
         await this.observationsRepository.save(observationToInsert);

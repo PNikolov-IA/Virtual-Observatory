@@ -1,4 +1,4 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObservationsService } from './observations.service';
 import { ObservationInsertDTO } from '../models/observation/observation-insert.dto';
@@ -46,10 +46,10 @@ export class ObservationsController {
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id') id: string, @Res() response): Promise<string> {
+  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
 
     try {
-      const observationFiltered = await this.observationsService.retrieveObservationById(+id);
+      const observationFiltered = await this.observationsService.retrieveObservationById(id);
       return response.status(HttpStatus.OK).json({ message: 'Successfully find observation.', data: observationFiltered });
 
     } catch (error) {

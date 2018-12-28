@@ -1,4 +1,4 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, Put } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, Put, ParseIntPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectTypesService } from './object-types.service';
 import { ObjectTypeInsertDTO } from '../models/objectType/object-type-insert.dto';
@@ -18,7 +18,8 @@ export class ObjectTypesController {
 
     try {
       const foundObjectTypes = await this.objectTypesService.getObjectTypes();
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find all object types.', data: foundObjectTypes });
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully find all object types.', data: foundObjectTypes });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find the object types.';
@@ -30,11 +31,12 @@ export class ObjectTypesController {
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id') id: string, @Res() response): Promise<string> {
+  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
 
     try {
-      const foundObjectType = await this.objectTypesService.getObjectTypeById(+id);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find object type.', data: foundObjectType });
+      const foundObjectType = await this.objectTypesService.getObjectTypeById(id);
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully find object type.', data: foundObjectType });
 
     } catch (error) {
       error.message = 'Unsuccessfully try to find object type.';
@@ -50,7 +52,7 @@ export class ObjectTypesController {
 
     try {
       const insertedObjectType = await this.objectTypesService.insertObjectType(objectType);
-      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedObjectType});
+      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedObjectType });
 
     } catch (error) {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);

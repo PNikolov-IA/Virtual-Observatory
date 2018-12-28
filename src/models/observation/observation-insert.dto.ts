@@ -24,4 +24,7 @@ export class ObservationInsertDTO {
     @Min(1)
     objectId: number;
 
+    @IsNumber()
+    @Min(1)
+    projectsId: number[];
 }
