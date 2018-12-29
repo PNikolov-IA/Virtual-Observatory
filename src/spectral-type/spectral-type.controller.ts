@@ -4,7 +4,7 @@ import { SpectralTypesService } from './spectral-type.service';
 import { SpectralTypeAlterDTO } from '../models/spectralType/spectral-type-alter.dto';
 import { SpectralTypeInsertDTO } from '../models/spectralType/spectral-type-insert.dto';
 
-@Controller('spectral_types')
+@Controller('spectral-types')
 export class SpectralTypesController {
 
   constructor(

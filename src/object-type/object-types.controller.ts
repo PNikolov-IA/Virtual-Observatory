@@ -4,7 +4,7 @@ import { ObjectTypesService } from './object-types.service';
 import { ObjectTypeInsertDTO } from '../models/objectType/object-type-insert.dto';
 import { ObjectTypeAlterDTO } from '../models/objectType/object-type-alter.dto';
 
-@Controller('object_types')
+@Controller('object-types')
 export class ObjectTypesController {
 
   constructor(
