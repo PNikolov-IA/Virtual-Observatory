@@ -8,8 +8,8 @@ import { DatabaseModule } from './database/database.module';
 import { Module, HttpModule } from '@nestjs/common';
 import { HomeModule } from './home/home.module';
 import { InstrumentsModule } from './instrument/instruments.module';
-import { ObjectTypesModule } from './objectType/object-types.module';
-import { SpectralTypesModule } from './spectralType/spectral-type.module';
+import { ObjectTypesModule } from './object-type/object-types.module';
+import { SpectralTypesModule } from 'src/spectral-type/spectral-type.module';
 
 @Module({
   imports: [

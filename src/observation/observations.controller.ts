@@ -4,6 +4,7 @@ import { ObservationsService } from './observations.service';
 import { ObservationInsertDTO } from '../models/observation/observation-insert.dto';
 
 @Controller('observations')
+@UseGuards(AuthGuard())
 export class ObservationsController {
 
   constructor(
@@ -12,7 +13,6 @@ export class ObservationsController {
   ) { }
 
   @Get()
-  @UseGuards(AuthGuard())
   async getByIdentifier(@Query() query, @Res() response): Promise<string> {
 
     if (!Object.keys(query).length) {
@@ -45,7 +45,6 @@ export class ObservationsController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard())
   async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
 
     try {
@@ -60,8 +59,94 @@ export class ObservationsController {
 
   }
 
+  @Get(':id/date')
+  async getDate(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
+
+    try {
+      const retrievedDateOfObservation = await this.observationsService
+        .retrieveDateOfObservation(id);
+
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully retrieve the dates of current observations.', data: retrievedDateOfObservation });
+
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST)
+        .json(error.message);
+    }
+
+  }
+
+  @Get(':id/object')
+  async getObject(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
+
+    try {
+      const retrievedObjectOfObservation = await this.observationsService
+        .retrieveObjectOfObservation(id);
+
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully retrieve the object in observation.', data: retrievedObjectOfObservation });
+
+    } catch (error) {
+      error.message = 'Unsuccessfully try to retrieve the object in observation.';
+      return response.status(HttpStatus.BAD_REQUEST)
+        .json(error.message);
+    }
+
+  }
+
+  @Get(':id/object/identifier')
+  async getIdentifierOfObject(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
+
+    try {
+      const retrievedIdentifierOfObjectInObservation = await this.observationsService
+        .retrieveObjectOfObservation(id);
+
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully retrieve the name of object in observation.', data: retrievedIdentifierOfObjectInObservation.identifier });
+
+    } catch (error) {
+      error.message = 'Unsuccessfully try to retrieve the name of object in observation.';
+      return response.status(HttpStatus.BAD_REQUEST)
+        .json(error.message);
+    }
+
+  }
+
+  @Get(':id/observer')
+  async getObserver(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
+
+    try {
+      const retrievedObserverOfObservation = await this.observationsService.retrieveObservationById(id);
+
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully retrieve the observer of current observation.', data: retrievedObserverOfObservation.observer });
+
+    } catch (error) {
+      error.message = 'Unsuccessfully try to retrieve the observer of current observation.';
+      return response.status(HttpStatus.BAD_REQUEST)
+        .json(error.message);
+    }
+
+  }
+
+  @Get(':id/operator')
+  async getOperator(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
+
+    try {
+      const retrievedOperatorOfObservation = await this.observationsService.retrieveObservationById(id);
+
+      return response.status(HttpStatus.OK)
+        .json({ message: 'Successfully retrieve the operator of current observation.', data: retrievedOperatorOfObservation.operator });
+
+    } catch (error) {
+      error.message = 'Unsuccessfully try to retrieve the operator of current observation.';
+      return response.status(HttpStatus.BAD_REQUEST)
+        .json(error.message);
+    }
+
+  }
+
   @Post()
-  @UseGuards(AuthGuard())
   async insert(@Body() observation: ObservationInsertDTO, @Res() response): Promise<string> {
 
     try {
@@ -75,4 +160,5 @@ export class ObservationsController {
     }
 
   }
+
 }

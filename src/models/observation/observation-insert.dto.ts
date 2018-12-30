@@ -2,6 +2,7 @@ import { IsString, IsDate, IsNumber, Min } from 'class-validator';
 
 export class ObservationInsertDTO {
 
+    @IsString()
     @IsDate()
     date: Date;
 

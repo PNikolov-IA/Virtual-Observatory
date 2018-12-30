@@ -16,4 +16,4 @@ import { Project } from '../data/entities/project.entity';
   exports: [],
   controllers: [ObservationsController],
 })
-export class ObservationsModule {}
+export class ObservationsModule { }

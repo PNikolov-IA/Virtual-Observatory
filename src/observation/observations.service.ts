@@ -72,11 +72,40 @@ export class ObservationsService {
         return retrievedObservation;
     }
 
+    async retrieveDateOfObservation(id: number) {
+
+        const retrievedObservation = await this.observationsRepository.findOneOrFail({
+            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
+            where: { id },
+        });
+
+        if (!retrievedObservation.date) {
+            throw new NotFoundException('Unsuccessfully try to retrieve the date of observation.');
+        }
+
+        return retrievedObservation.date;
+
+    }
+
+    async retrieveObjectOfObservation(id: number) {
+
+        const retrievedObservation = await this.observationsRepository.findOneOrFail({
+            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
+            where: { id },
+        });
+
+        if (!retrievedObservation.object) {
+            throw new NotFoundException('Unsuccessfully try to retrieve the object in observation.');
+        }
+
+        return retrievedObservation.object;
+
+    }
     async retrieveFilteredObservations(objectIdentifier: string) {
 
         const retrievedFilteredObservations = await this.observationsRepository.find({
             relations: ['instrument', 'observer', 'operator', 'objects', 'projects'],
-            where: { object: { identifier: objectIdentifier } } ,  // It is not working properly!
+            where: { object: { identifier: objectIdentifier } },  // It is not working properly!
             order: { id: 'ASC' },
         });
 
