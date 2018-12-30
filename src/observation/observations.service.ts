@@ -26,7 +26,7 @@ export class ObservationsService {
         private readonly objectRepository: Repository<AstronomicalObject>,
 
         @InjectRepository(Project)
-        private readonly projectsRepository: Repository<Project>,
+        private readonly projectsRepository: Repository<Project[]>,
 
     ) { }
 
@@ -40,7 +40,7 @@ export class ObservationsService {
         observationToInsert.object = await this.objectRepository.findOneOrFail({ where: { id: observation.objectId } });
         observationToInsert.observer = await this.userRepository.findOneOrFail({ where: { id: observation.observerId } });
         observationToInsert.operator = await this.userRepository.findOneOrFail({ where: { id: observation.operatorId } });
-        observationToInsert.projects = await this.projectsRepository.find({ where: { id: observation.projectsId } });
+        observationToInsert.projects = Promise.resolve(await this.projectsRepository.findOne({ where: { id: observation.projectsId } }));
 
         this.objectRepository.create(observationToInsert);
         await this.observationsRepository.save(observationToInsert);

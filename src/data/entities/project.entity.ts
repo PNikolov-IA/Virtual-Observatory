@@ -20,5 +20,5 @@ export class Project {
 
     @ManyToMany(type => Observation, observation => observation.projects)
     @JoinTable({name: 'projects_observations'})
-    observations: Observation[];
+    observations: Promise<Observation[]>;
 }

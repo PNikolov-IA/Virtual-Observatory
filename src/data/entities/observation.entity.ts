@@ -31,5 +31,5 @@ export class Observation {
     object: AstronomicalObject;
 
     @ManyToMany(type => Project, project => project.observations)
-    projects: Project[];
+    projects: Promise<Project[]>;
 }
