@@ -7,19 +7,19 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   @IsEmail()
   email: string;
 
-  @Column()
+  @Column({ length: 10 })
   @IsString()
   password: string;
 
-  @Column()
+  @Column({ length: 20 })
   @Length(2, 20, { message: 'The length of the first name should be between 2-20 characters' })
   firstName: string;
 
-  @Column()
+  @Column({ length: 20 })
   @Length(2, 20, { message: 'The length of the last name should be between 2-20 characters' })
   lastName: string;
 

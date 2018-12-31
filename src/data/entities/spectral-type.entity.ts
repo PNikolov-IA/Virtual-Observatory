@@ -7,7 +7,7 @@ export class SpectralType {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'nvarchar', unique: true, length: 20 })
   @IsString()
   @Length(2, 20, { message: 'Spectral type name is too short. The length should be between 2-20 characters' })
   type: string;
