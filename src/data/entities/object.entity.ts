@@ -14,9 +14,9 @@ export class AstronomicalObject {
   @Length(3, 20, { message: 'The length should be between 3-20 characters' })
   identifier: string;
 
-  @Column({ unique: true, nullable: false, length: 10 })
+  @Column({ unique: true, nullable: false, length: 25 })
   @IsString()
-  @Length(8, 10, { each: true, message: 'The length should be between 3-20 characters' })
+  @Length(8, 25, { each: true, message: 'The length should be between 8-25 characters' })
   coordinates: string;
 
   @Column({ nullable: true, type: 'float' })

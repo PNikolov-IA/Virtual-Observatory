@@ -18,6 +18,6 @@ import { ConfigService } from 'src/config/config.service';
       }),
       inject: [ConfigService],
     }),
-  ]
+  ],
 })
 export class DatabaseModule { }

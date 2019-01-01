@@ -1,17 +1,19 @@
-import { Column, PrimaryGeneratedColumn, Entity, OneToMany } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, OneToMany, BeforeInsert } from 'typeorm';
 import { IsEmail, Length, IsString } from 'class-validator';
 import { Observation } from './observation.entity';
 
 @Entity({ name: 'users' })
 export class User {
+
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
+  @IsString()
   @IsEmail()
   email: string;
 
-  @Column({ length: 10 })
+  @Column()
   @IsString()
   password: string;
 
@@ -28,4 +30,10 @@ export class User {
 
   @OneToMany(() => Observation, observation => observation.observer && observation.operator)
   observations: Observation[];
+
+  // @BeforeInsert()
+  // logUserInsertion() {
+
+  // }
+
 }

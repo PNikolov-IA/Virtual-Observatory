@@ -1,4 +1,3 @@
-import { Length } from 'class-validator';
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';

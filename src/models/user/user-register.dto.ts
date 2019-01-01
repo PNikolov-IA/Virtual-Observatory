@@ -1,7 +1,9 @@
-import { IsString, Length, Matches, IsOptional, IsEmail } from 'class-validator';
+import { IsString, Length, IsEmail } from 'class-validator';
 
 export class UserRegisterDTO {
-  @IsEmail()
+
+  @IsString()
+  // @IsEmail()
   email: string;
 
   @IsString()

@@ -10,6 +10,7 @@ import { HomeModule } from './home/home.module';
 import { InstrumentsModule } from './instrument/instruments.module';
 import { ObjectTypesModule } from './object-type/object-types.module';
 import { SpectralTypesModule } from 'src/spectral-type/spectral-type.module';
+import { TestDataModule } from './load-test-data/test-data.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SpectralTypesModule } from 'src/spectral-type/spectral-type.module';
     ObjectTypesModule,
     SpectralTypesModule,
     ProjectsModule,
+    TestDataModule,
   ],
   controllers: [],
   providers: [],
