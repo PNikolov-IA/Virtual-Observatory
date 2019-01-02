@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from '../common';
 import { TestDataService } from './test-data.service';
 
-@Controller('test_data')
+@Controller('test-data')
 export class TestDataController {
 
   constructor(
@@ -14,7 +14,6 @@ export class TestDataController {
   @Get()
   @UseGuards(AuthGuard(), AdminGuard)
   async loadTestData(@Res() response): Promise<string> {
-
     try {
       const insertedUsers = await this.testDataService.loadUsers();
       const insertedInstruments = await this.testDataService.loadInstruments();
@@ -22,7 +21,7 @@ export class TestDataController {
       const insertedObjectTypes = await this.testDataService.loadObjectTypes();
       const insertedSpectralTypes = await this.testDataService.loadSpectralTypes();
       const insertedProjects = await this.testDataService.loadProjects();
-      // const insertedObservation = await this.testDataService.loadObservation();
+      const insertedObservation = await this.testDataService.loadObservation();
 
       return response.status(HttpStatus.OK)
         .json({
@@ -34,7 +33,7 @@ export class TestDataController {
             insertedObjectTypes,
             insertedSpectralTypes,
             insertedProjects,
-            // insertedObservation,
+            insertedObservation,
           ],
         });
 
@@ -42,7 +41,5 @@ export class TestDataController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
-
 }

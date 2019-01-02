@@ -1,17 +1,16 @@
+import { Observation } from './../data/entities/observation.entity';
 import { Project } from './../data/entities/project.entity';
 import { ObjectType } from './../data/entities/object-type.entity';
 import { AstronomicalObject } from './../data/entities/object.entity';
 import { Instrument } from './../data/entities/instrument.entity';
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { getConnection } from 'typeorm';
+import { getConnection, getRepository, Repository } from 'typeorm';
 import { User } from '../data/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { SpectralType } from '../data/entities/spectral-type.entity';
-import { Observation } from '../data/entities/observation.entity';
 
 @Injectable()
 export class TestDataService {
-
     async loadUsers(): Promise<any> {
         const insertedUsers = await getConnection()
             .createQueryBuilder()
@@ -29,7 +28,6 @@ export class TestDataService {
         }
 
         return insertedUsers.raw;
-
     }
 
     async loadInstruments(): Promise<any> {
@@ -49,7 +47,6 @@ export class TestDataService {
         }
 
         return insertedInstruments.raw;
-
     }
 
     async loadAstronomicalObjects(): Promise<any> {
@@ -71,7 +68,6 @@ export class TestDataService {
         }
 
         return insertedObjects.raw;
-
     }
 
     async loadObjectTypes(): Promise<any> {
@@ -95,7 +91,6 @@ export class TestDataService {
         }
 
         return insertedObjectTypes.raw;
-
     }
 
     async loadSpectralTypes(): Promise<any> {
@@ -118,7 +113,6 @@ export class TestDataService {
         }
 
         return insertedSpectralTypes.raw;
-
     }
 
     async loadProjects(): Promise<any> {
@@ -138,7 +132,6 @@ export class TestDataService {
         }
 
         return insertedProjects.raw;
-
     }
 
     async loadObservation(): Promise<any> {
@@ -147,16 +140,71 @@ export class TestDataService {
             .insert()
             .into(Observation)
             .values([
-                {},
+                { date: new Date(), imagePath: '//dddd' },
+                { date: new Date(), imagePath: '//mmmmm' },
             ])
             .execute();
 
-        if (!insertedObservations) {
-            throw new BadRequestException('Unsuccessfully try to load test projects info.');
-        }
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'instrument')
+            .of(1)
+            .set(1);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'observer')
+            .of(1)
+            .set(1);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'operator')
+            .of(1)
+            .set(2);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'object')
+            .of(1)
+            .set(1);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'projects')
+            .of(1)
+            .add(2);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'instrument')
+            .of(2)
+            .set(2);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'observer')
+            .of(2)
+            .set(2);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'operator')
+            .of(2)
+            .set(1);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'object')
+            .of(2)
+            .set(2);
+
+        await getConnection()
+            .createQueryBuilder()
+            .relation(Observation, 'projects')
+            .of(2)
+            .add(2);
 
         return insertedObservations.raw;
-
     }
-
 }

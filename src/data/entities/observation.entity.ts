@@ -11,7 +11,7 @@ export class Observation {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: Date })
+    @Column({ type: Date})
     @IsDate()   // !?
     date: Date;
 
