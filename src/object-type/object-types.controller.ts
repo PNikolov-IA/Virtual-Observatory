@@ -6,6 +6,7 @@ import { ObjectTypeAlterDTO } from '../models/objectType/object-type-alter.dto';
 
 @Controller('object-types')
 export class ObjectTypesController {
+    [x: string]: any;
 
   constructor(
     private readonly objectTypesService: ObjectTypesService,
