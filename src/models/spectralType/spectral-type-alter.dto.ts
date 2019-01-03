@@ -9,5 +9,4 @@ export class SpectralTypeAlterDTO {
     @IsString()
     @Min(2)
     typeToAlter: string;
-
 }

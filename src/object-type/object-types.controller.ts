@@ -22,11 +22,9 @@ export class ObjectTypesController {
         .json({ message: 'Successfully find all object types.', data: foundObjectTypes });
 
     } catch (error) {
-      error.message = 'Unsuccessfully try to find the object types.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Get(':id')
@@ -39,11 +37,9 @@ export class ObjectTypesController {
         .json({ message: 'Successfully find object type.', data: foundObjectType });
 
     } catch (error) {
-      error.message = 'Unsuccessfully try to find object type.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Post()
@@ -58,7 +54,6 @@ export class ObjectTypesController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Put()
@@ -70,7 +65,6 @@ export class ObjectTypesController {
       return response.status(HttpStatus.OK).json({ message: 'Successfully changed.', data: alteredObjectType });
 
     } catch (error) {
-      error.message = 'Incorrect data input.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }

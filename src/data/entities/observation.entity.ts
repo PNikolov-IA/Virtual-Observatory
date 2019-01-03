@@ -12,7 +12,7 @@ export class Observation {
     id: number;
 
     @Column({ type: Date})
-    @IsDate()   // !?
+    @IsDate()
     date: Date;
 
     @Column({ default: '' })

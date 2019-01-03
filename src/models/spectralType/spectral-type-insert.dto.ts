@@ -5,5 +5,4 @@ export class SpectralTypeInsertDTO {
     @IsString()
     @Min(2)
     type: string;
-
 }

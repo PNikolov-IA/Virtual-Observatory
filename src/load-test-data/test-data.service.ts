@@ -4,7 +4,7 @@ import { ObjectType } from './../data/entities/object-type.entity';
 import { AstronomicalObject } from './../data/entities/object.entity';
 import { Instrument } from './../data/entities/instrument.entity';
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { getConnection, getRepository, Repository } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { User } from '../data/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { SpectralType } from '../data/entities/spectral-type.entity';

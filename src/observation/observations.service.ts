@@ -1,7 +1,7 @@
 import { Instrument } from './../data/entities/instrument.entity';
 import { Observation } from './../data/entities/observation.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository, getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObservationInsertDTO } from '../models/observation/observation-insert.dto';
 import { User } from '../data/entities/user.entity';
@@ -27,11 +27,9 @@ export class ObservationsService {
 
         @InjectRepository(Project)
         private readonly projectsRepository: Repository<Project[]>,
-
     ) { }
 
     async insertObservation(observation: ObservationInsertDTO) {
-
         const observationToInsert: Observation = new Observation();
 
         observationToInsert.date = observation.date;
@@ -46,25 +44,22 @@ export class ObservationsService {
         await this.observationsRepository.save(observationToInsert);
 
         return observationToInsert;
-
     }
 
     async retrieveObservations() {
-
         const retrievedObservations = await this.observationsRepository.find({
             relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
             order: { id: 'ASC' },
         });
 
         if (!retrievedObservations) {
-            throw new NotFoundException();
+            throw new NotFoundException('Unsuccessfully observations retrieve.');
         }
 
         return retrievedObservations;
     }
 
     async retrieveObservationById(id: number) {
-
         const retrievedObservation = await this.observationsRepository.findOneOrFail({
             relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
             where: { id },
@@ -73,7 +68,6 @@ export class ObservationsService {
     }
 
     async retrieveDateOfObservation(id: number) {
-
         const retrievedObservation = await this.observationsRepository.findOneOrFail({
             relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
             where: { id },
@@ -84,11 +78,9 @@ export class ObservationsService {
         }
 
         return retrievedObservation.date;
-
     }
 
     async retrieveObjectOfObservation(id: number) {
-
         const retrievedObservation = await this.observationsRepository.findOneOrFail({
             relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
             where: { id },
@@ -99,10 +91,8 @@ export class ObservationsService {
         }
 
         return retrievedObservation.object;
-
     }
     async retrieveFilteredObservations(objectIdentifier: string) {
-
         const retrievedFilteredObservations = await this.observationsRepository.find({
             relations: ['instrument', 'observer', 'operator', 'objects', 'projects'],
             where: { object: { identifier: objectIdentifier } },  // It is not working properly!
@@ -110,11 +100,9 @@ export class ObservationsService {
         });
 
         if (!retrievedFilteredObservations) {
-            throw new NotFoundException();
+            throw new NotFoundException('Unsuccessfully filtered observations retrieve.');
         }
 
         return retrievedFilteredObservations;
-
     }
-
 }

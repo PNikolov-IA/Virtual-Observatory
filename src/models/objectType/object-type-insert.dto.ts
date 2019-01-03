@@ -5,5 +5,4 @@ export class ObjectTypeInsertDTO {
     @IsString()
     @Min(2)
     type: string;
-
 }

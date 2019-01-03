@@ -12,11 +12,9 @@ export class ProjectsService {
 
         @InjectRepository(Project)
         private readonly projectsRepository: Repository<Project>,
-
     ) { }
 
     async getProjects(): Promise<Project[]> {
-
         const foundProjects = await this.projectsRepository.find();
 
         if (!foundProjects) {
@@ -24,11 +22,9 @@ export class ProjectsService {
         }
 
         return foundProjects;
-
     }
 
     async getProjectById(id: number): Promise<Project> {
-
         const foundProject = await this.projectsRepository.findOne({ where: { id } });
 
         if (!foundProject) {
@@ -39,13 +35,10 @@ export class ProjectsService {
     }
 
     async insertProject(project: ProjectInsertDTO): Promise<Project> {
+        const foundProject: Project = await this.projectsRepository.findOne({ where: project.name });
 
-        const foundProjects: Project[] = await this.findProjects();
-
-        for (const elements of foundProjects) {
-            if (elements.name === project.name) {
-                throw new BadRequestException('The project already exist.');
-            }
+        if (foundProject) {
+            throw new BadRequestException('The project already exist.');
         }
 
         const projectToInsert: Project = new Project();
@@ -62,51 +55,28 @@ export class ProjectsService {
         }
 
         return projectToInsert;
-
     }
 
     async alterProject(project: ProjectAlterDTO): Promise<string> {
+        const foundProject: Project = await this.projectsRepository.findOne({ where: project.oldName });
 
-        const foundProjects: Project[] = await this.findProjects();
-
-        let foundOldProjectName = false;
-        for (const elements of foundProjects) {
-            if (elements.name === project.oldName) {
-                elements.name = project.newName;
-                if (project.description) {
-                    elements.description = project.description;
-                }
-
-                foundOldProjectName = true;
-                break;
+        if (foundProject) {
+            foundProject.name = project.newName;
+            if (project.description) {
+                foundProject.description = project.description;
             }
-        }
 
-        if (!foundOldProjectName) {
+        } else {
             throw new BadRequestException('No such project.');
         }
 
-        this.projectsRepository.create(foundProjects);
-        const result = await this.projectsRepository.save(foundProjects);
+        this.projectsRepository.create(foundProject);
+        const result = await this.projectsRepository.save(foundProject);
 
         if (!result) {
-            throw new BadRequestException('Unsuccessfully try to input the data.');
+            throw new BadRequestException('Unsuccessfully try to save the update project.');
         }
 
         return project.newName;
-
     }
-
-    findProjects() {
-
-        const foundProjects = this.projectsRepository.find();
-
-        if (!foundProjects) {
-            throw new BadRequestException('Unsuccessfully try to find the project.');
-        }
-
-        return foundProjects;
-
-    }
-
 }

@@ -15,6 +15,6 @@ export class Instrument {
     @Length(2, 100, { message: 'The length should be between 2-100 characters' })
     setupInfo?: string;
 
-    @OneToMany(type => Observation, observation => observation.instrument, { onDelete: 'SET NULL' })
+    @OneToMany(type => Observation, observation => observation.instrument)
     observations: Observation[];
 }

@@ -9,12 +9,10 @@ export class ObservationsController {
 
   constructor(
     private readonly observationsService: ObservationsService,
-
   ) { }
 
   @Get()
   async getByIdentifier(@Query() query, @Res() response): Promise<string> {
-
     if (!Object.keys(query).length) {
       // Select all
       try {
@@ -22,8 +20,7 @@ export class ObservationsController {
         return response.status(HttpStatus.OK).json({ message: 'Successfully observations retrieve.', data: retrievedObservations });
 
       } catch (error) {
-        error.message = 'Unsuccessfully observations retrieve.';
-        return response.status(HttpStatus.BAD_REQUEST).json(error.message);        // Status code ???
+        return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
       }
 
@@ -35,13 +32,10 @@ export class ObservationsController {
         return response.status(HttpStatus.OK).json({ message: 'Successfully filtered observations retrieve.', data: retrievedObservations });
 
       } catch (error) {
-        error.message = 'Unsuccessfully filtered observations retrieve.';
         return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
       }
-
     }
-
   }
 
   @Get(':id')
@@ -56,7 +50,6 @@ export class ObservationsController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Get(':id/date')
@@ -73,7 +66,6 @@ export class ObservationsController {
       return response.status(HttpStatus.BAD_REQUEST)
         .json(error.message);
     }
-
   }
 
   @Get(':id/object')
@@ -91,7 +83,6 @@ export class ObservationsController {
       return response.status(HttpStatus.BAD_REQUEST)
         .json(error.message);
     }
-
   }
 
   @Get(':id/object/identifier')
@@ -109,7 +100,6 @@ export class ObservationsController {
       return response.status(HttpStatus.BAD_REQUEST)
         .json(error.message);
     }
-
   }
 
   @Get(':id/observer')
@@ -126,7 +116,6 @@ export class ObservationsController {
       return response.status(HttpStatus.BAD_REQUEST)
         .json(error.message);
     }
-
   }
 
   @Get(':id/operator')
@@ -143,7 +132,6 @@ export class ObservationsController {
       return response.status(HttpStatus.BAD_REQUEST)
         .json(error.message);
     }
-
   }
 
   @Post()
@@ -158,7 +146,5 @@ export class ObservationsController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
-
 }

@@ -9,5 +9,4 @@ export class InstrumentInsertDTO {
     @IsString()
     @Length(2, 100)
     setupInfo?: string;
-
 }

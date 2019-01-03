@@ -14,7 +14,6 @@ export class UsersController {
   @Get()
   @UseGuards(AuthGuard(), AdminGuard)
   async all(@Res() response) {
-
     try {
       const users = await this.usersService.getAll();
       return response.status(HttpStatus.OK).json(users);
@@ -24,13 +23,11 @@ export class UsersController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Get(':id')
   @UseGuards(AuthGuard(), AdminGuard)
   async getDetails(@Param('id', UserByIdPipe) id: number, @Res() response): Promise<User> {
-
     try {
       const user: User = await this.usersService.getUserById(id);
       return response.status(HttpStatus.OK).json(user);
@@ -40,21 +37,17 @@ export class UsersController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Put(':id')
   @UseGuards(AuthGuard(), AdminGuard)
   async changeRole(@Param('id') id: string, @Res() response) {
-
     try {
       const message: string = await this.usersService.changeRole(+id);
       return response.status(HttpStatus.OK).json(message);
 
     } catch (error) {
-      error.message = 'No such user id.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
     }
-
   }
 }

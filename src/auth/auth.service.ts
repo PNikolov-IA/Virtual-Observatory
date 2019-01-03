@@ -2,7 +2,7 @@ import { GetUserDTO } from '../models/user/get-user.dto';
 import { UserLoginDTO } from '../models/user/user-login.dto';
 import { UsersService } from '../common/core/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtPayload } from './../interfaces/jwt-payload';
 
 @Injectable()

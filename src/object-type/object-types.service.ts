@@ -9,43 +9,36 @@ import { ObjectTypeAlterDTO } from '../models/objectType/object-type-alter.dto';
 export class ObjectTypesService {
 
     constructor(
-
         @InjectRepository(ObjectType)
         private readonly objectTypesRepository: Repository<ObjectType>,
-
     ) { }
 
     async getObjectTypes(): Promise<ObjectType[]> {
-
         const foundObjectTypes = await this.objectTypesRepository.find();
 
         if (!foundObjectTypes) {
-            throw new NotFoundException();
+            throw new NotFoundException('Unsuccessfully try to find the object types.');
         }
 
         return foundObjectTypes;
-
     }
 
     async getObjectTypeById(id: number): Promise<ObjectType> {
-
-        const foundObjectType = await this.objectTypesRepository.findOneOrFail({ where: { id } });
+        const foundObjectType = await this.objectTypesRepository.findOne({ where: { id } });
 
         if (!foundObjectType) {
-            throw new NotFoundException();
+            throw new NotFoundException('Unsuccessfully try to find object type.');
         }
 
         return foundObjectType;
     }
 
     async insertObjectType(objectType: ObjectTypeInsertDTO): Promise<ObjectType> {
+        const foundObjectType: ObjectType = await this.objectTypesRepository
+            .findOne({ where: objectType.type });
 
-        const foundObjectType: ObjectType[] = await this.findObjectType();
-
-        for (const elements of foundObjectType) {
-            if (elements.type === objectType.type) {
-                throw new BadRequestException('The object type already exist.');
-            }
+        if (foundObjectType) {
+            throw new BadRequestException('The object type already exist.');
         }
 
         const objectTypeToInsert: ObjectType = new ObjectType();
@@ -55,47 +48,29 @@ export class ObjectTypesService {
         const result = await this.objectTypesRepository.save(objectTypeToInsert);
 
         if (!result) {
-            throw new BadRequestException('Incorrect data input.');
+            throw new BadRequestException('Unsuccessfully try to save object type.');
         }
 
         return objectTypeToInsert;
-
     }
 
     async alterObjectType(objectType: ObjectTypeAlterDTO): Promise<string> {
+        const foundObjectType: ObjectType = await this.objectTypesRepository
+            .findOne({ where: objectType.insertedType });
 
-        const foundObjectType: ObjectType[] = await this.findObjectType();
-
-        let foundType = false;
-        for (const elements of foundObjectType) {
-            if (elements.type === objectType.insertedType) {
-                elements.type = objectType.typeToAlter;
-                foundType = true;
-                break;
-            }
+        if (foundObjectType) {
+            foundObjectType.type = objectType.typeToAlter;
+        } else {
+            throw new BadRequestException('Type object not found.');
         }
 
         this.objectTypesRepository.create(foundObjectType);
         const result = await this.objectTypesRepository.save(foundObjectType);
 
-        if (!result || !foundType) {
-            throw new BadRequestException();
+        if (!result) {
+            throw new BadRequestException('Unsuccessfully try to save the altered object type.');
         }
 
         return objectType.typeToAlter;
-
     }
-
-    findObjectType() {
-
-        const foundObjectType = this.objectTypesRepository.find();
-
-        if (!foundObjectType) {
-            throw new BadRequestException();
-        }
-
-        return foundObjectType;
-
-    }
-
 }

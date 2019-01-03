@@ -1,7 +1,7 @@
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';
-import { Injectable, HttpStatus, Inject, Res, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './../../data/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,29 +16,26 @@ export class UsersService {
   ) { }
 
   async registerUser(user: UserRegisterDTO) {
+    const foundUsers = await this.usersRepository.find();
 
-    const anyUser = await this.usersRepository.find();
-
-    if (!anyUser.length) {
+    if (!foundUsers.length) {
       const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
 
       if (userFound) {
-        throw new Error('Email already in use');
+        throw new Error('Email already in use.');
       }
     }
 
     user.password = await bcrypt.hash(user.password, 10);
-    const userToAdd: User = new User();
 
+    const userToAdd: User = new User();
     userToAdd.email = user.email;
     userToAdd.password = user.password;
     userToAdd.firstName = user.firstName;
     userToAdd.lastName = user.lastName;
 
-    if (anyUser.length === 0) {       // first user is admin
+    if (!foundUsers.length) {       // first user is admin
       userToAdd.isAdmin = true;
-    } else {
-      userToAdd.isAdmin = false;
     }
 
     this.usersRepository.create(userToAdd);
@@ -49,11 +46,9 @@ export class UsersService {
     }
 
     return result;
-
   }
 
   async validateUser(payload: JwtPayload): Promise<GetUserDTO> {
-
     const userFound: User = await this.usersRepository.findOne({ where: { email: payload.email } });
 
     if (userFound) {
@@ -61,11 +56,9 @@ export class UsersService {
     }
 
     return null;
-
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
-
     const userFound: GetUserDTO = await this.usersRepository
       .findOne({ select: ['email', 'password', 'isAdmin'], where: { email: user.email } });
 
@@ -78,11 +71,9 @@ export class UsersService {
     }
 
     return null;
-
   }
 
   getAll() {
-
     const result = this.usersRepository.find({});
 
     if (result) {
@@ -90,27 +81,24 @@ export class UsersService {
     }
 
     return null;
-
   }
 
   async getUserById(id: number) {
-
-    const result = await this.usersRepository.findOneOrFail({ where: { id } });
+    const result = await this.usersRepository.findOne({ where: { id } });
 
     if (result) {
       return result;
     }
 
     return null;
-
   }
 
   async changeRole(id: number) {
     // check for current admin
-    const userToChange: User = await this.usersRepository.findOneOrFail({ where: { id } });
+    const userToChange: User = await this.usersRepository.findOne({ where: { id } });
 
     if (!userToChange) {
-      throw new Error();
+      throw new Error('No user found');
     }
 
     let state = '';
@@ -130,6 +118,5 @@ export class UsersService {
     }
 
     return null;
-
   }
 }

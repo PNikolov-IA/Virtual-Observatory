@@ -9,5 +9,4 @@ export class ObjectTypeAlterDTO {
     @IsString()
     @Min(2)
     typeToAlter: string;
-
 }

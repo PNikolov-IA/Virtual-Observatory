@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn, Entity, OneToMany, BeforeInsert } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, OneToMany } from 'typeorm';
 import { IsEmail, Length, IsString } from 'class-validator';
 import { Observation } from './observation.entity';
 
@@ -35,5 +35,4 @@ export class User {
   // logUserInsertion() {
 
   // }
-
 }

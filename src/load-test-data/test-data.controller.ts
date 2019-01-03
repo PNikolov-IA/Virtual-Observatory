@@ -8,7 +8,6 @@ export class TestDataController {
 
   constructor(
     private readonly testDataService: TestDataService,
-
   ) { }
 
   @Get()

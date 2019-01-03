@@ -9,47 +9,39 @@ export class SpectralTypesController {
 
   constructor(
     private readonly spectralTypesService: SpectralTypesService,
-
   ) { }
 
   @Get()
   @UseGuards(AuthGuard())
   async getAll(@Res() response): Promise<string> {
-
     try {
       const foundSpectralTypes = await this.spectralTypesService.getSpectralTypes();
       return response.status(HttpStatus.OK)
         .json({ message: 'Successfully find all spectral types.', data: foundSpectralTypes });
 
     } catch (error) {
-      error.message = 'Unsuccessfully try to find the spectral types.';
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Get(':id')
   @UseGuards(AuthGuard())
   async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
-
     try {
       const foundSpectralType = await this.spectralTypesService.getSpectralTypeById(id);
       return response.status(HttpStatus.OK)
         .json({ message: 'Successfully find spectral type.', data: foundSpectralType });
 
     } catch (error) {
-      error.message = 'Unsuccessfully try to find spectral type.';
-      return response.status(HttpStatus.NOT_FOUND).json(error.message);
+      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Post()
   @UseGuards(AuthGuard())
   async insertSpectralType(@Body() spectralType: SpectralTypeInsertDTO, @Res() response): Promise<string> {
-
     try {
       const insertedSpectralType = await this.spectralTypesService.insertSpectralType(spectralType);
       return response.status(HttpStatus.CREATED)
@@ -59,13 +51,11 @@ export class SpectralTypesController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 
   @Put()
   @UseGuards(AuthGuard())
   async alterSpectralType(@Body() spectralType: SpectralTypeAlterDTO, @Res() response): Promise<string> {
-
     try {
       const alteredSpectralType = await this.spectralTypesService.alterSpectralType(spectralType);
       return response.status(HttpStatus.OK)
@@ -76,6 +66,5 @@ export class SpectralTypesController {
       return response.status(HttpStatus.BAD_REQUEST).json(error.message);
 
     }
-
   }
 }
