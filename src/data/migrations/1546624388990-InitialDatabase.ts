@@ -1,13 +1,13 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitialiseDatabase1546516598149 implements MigrationInterface {
+export class InitialDatabase1546624388990 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query("CREATE TABLE `projects` (`id` int NOT NULL AUTO_INCREMENT, `name` varchar(100) NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', UNIQUE INDEX `IDX_2187088ab5ef2a918473cb9900` (`name`), UNIQUE INDEX `IDX_6b35e73e223225aa97d84eaa66` (`description`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `users` (`id` int NOT NULL AUTO_INCREMENT, `email` varchar(255) NOT NULL, `password` varchar(255) NOT NULL, `firstName` varchar(20) NOT NULL, `lastName` varchar(20) NOT NULL, `isAdmin` tinyint NOT NULL DEFAULT 0, PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `object_types` (`id` int NOT NULL AUTO_INCREMENT, `type` varchar(20) NULL, UNIQUE INDEX `IDX_923fa33f25f848a968dd0bed96` (`type`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `spectral_types` (`id` int NOT NULL AUTO_INCREMENT, `type` varchar(20) NOT NULL, UNIQUE INDEX `IDX_b3a220bdbde46b9f12ee3ac61e` (`type`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
-        await queryRunner.query("CREATE TABLE `objects` (`id` int NOT NULL AUTO_INCREMENT, `identifier` varchar(20) NOT NULL, `coordinates` varchar(25) NOT NULL, `magnitude` float NULL, `objectTypeId` int NULL, `spectralTypeId` int NULL, `description` varchar(150) NOT NULL, UNIQUE INDEX `IDX_085111dece95f3c78a49a59bd7` (`identifier`), UNIQUE INDEX `IDX_011ac6ca94c6232c1eaa8b8423` (`coordinates`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
+        await queryRunner.query("CREATE TABLE `objects` (`id` int NOT NULL AUTO_INCREMENT, `identifier` varchar(20) NOT NULL, `coordinates` varchar(30) NOT NULL, `magnitude` float NULL, `objectTypeId` int NULL, `spectralTypeId` int NULL, `description` varchar(150) NOT NULL, UNIQUE INDEX `IDX_085111dece95f3c78a49a59bd7` (`identifier`), UNIQUE INDEX `IDX_011ac6ca94c6232c1eaa8b8423` (`coordinates`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `observations` (`id` int NOT NULL AUTO_INCREMENT, `date` datetime NOT NULL, `imagePath` varchar(255) NOT NULL DEFAULT '', `instrumentId` int NULL, `observerId` int NULL, `operatorId` int NULL, `objectId` int NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `instruments` (`id` int NOT NULL AUTO_INCREMENT, `name` varchar(50) NOT NULL, `setupInfo` varchar(100) NULL, UNIQUE INDEX `IDX_2cfd43cad7a330c7cb45133ea1` (`name`), PRIMARY KEY (`id`)) ENGINE=InnoDB");
         await queryRunner.query("CREATE TABLE `projects_observations` (`projectsId` int NOT NULL, `observationsId` int NOT NULL, PRIMARY KEY (`projectsId`, `observationsId`)) ENGINE=InnoDB");

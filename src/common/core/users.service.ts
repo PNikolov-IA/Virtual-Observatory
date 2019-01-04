@@ -1,7 +1,7 @@
 import { GetUserDTO } from '../../models/user/get-user.dto';
 import { UserLoginDTO } from '../../models/user/user-login.dto';
 import { UserRegisterDTO } from '../../models/user/user-register.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './../../data/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,15 +15,11 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) { }
 
-  async registerUser(user: UserRegisterDTO) {
-    const foundUsers = await this.usersRepository.find();
+  async registerUser(user: UserRegisterDTO): Promise<User> {
+    const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
 
-    if (!foundUsers.length) {
-      const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
-
-      if (userFound) {
-        throw new Error('Email already in use.');
-      }
+    if (userFound) {
+      throw new Error('Email already in use.');
     }
 
     user.password = await bcrypt.hash(user.password, 10);
@@ -34,28 +30,15 @@ export class UsersService {
     userToAdd.firstName = user.firstName;
     userToAdd.lastName = user.lastName;
 
-    if (!foundUsers.length) {       // first user is admin
+    // first user is admin
+    if (!(await this.usersRepository.count())) {
       userToAdd.isAdmin = true;
     }
 
     this.usersRepository.create(userToAdd);
-    const result = await this.usersRepository.save(userToAdd);
+    await this.usersRepository.save(userToAdd);
 
-    if (!result) {
-      throw new NotFoundException();
-    }
-
-    return result;
-  }
-
-  async validateUser(payload: JwtPayload): Promise<GetUserDTO> {
-    const userFound: User = await this.usersRepository.findOne({ where: { email: payload.email } });
-
-    if (userFound) {
-      return userFound;
-    }
-
-    return null;
+    return userToAdd;
   }
 
   async signIn(user: UserLoginDTO): Promise<GetUserDTO> {
@@ -73,48 +56,34 @@ export class UsersService {
     return null;
   }
 
-  getAll() {
-    const result = this.usersRepository.find({});
-
-    if (result) {
-      return result;
-    }
-
-    return null;
+  async getAll(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 
   async getUserById(id: number) {
-    const result = await this.usersRepository.findOne({ where: { id } });
-
-    if (result) {
-      return result;
-    }
-
-    return null;
+    return await this.usersRepository.findOneOrFail({ where: { id } });
   }
 
-  async changeRole(id: number) {
+  async changeRole(id: number): Promise<User> {
     // check for current admin
-    const userToChange: User = await this.usersRepository.findOne({ where: { id } });
+    const userToChange: User = await this.usersRepository.findOneOrFail({ where: { id } });
 
-    if (!userToChange) {
-      throw new Error('No user found');
-    }
-
-    let state = '';
     if (userToChange.isAdmin) {
       userToChange.isAdmin = false;
-      state = 'Admin role was changed to user.';
-
     } else {
       userToChange.isAdmin = true;
-      state = 'User role was changed to admin.';
     }
 
     await this.usersRepository.save(userToChange);
 
-    if (state) {
-      return state;
+    return userToChange;
+  }
+
+  async validateUser(payload: JwtPayload): Promise<GetUserDTO> {
+    const userFound: User = await this.usersRepository.findOne({ where: { email: payload.email } });
+
+    if (userFound) {
+      return userFound;
     }
 
     return null;

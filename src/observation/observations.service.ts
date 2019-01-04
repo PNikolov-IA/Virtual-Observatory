@@ -1,6 +1,6 @@
 import { Instrument } from './../data/entities/instrument.entity';
 import { Observation } from './../data/entities/observation.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObservationInsertDTO } from '../models/observation/observation-insert.dto';
@@ -10,99 +10,47 @@ import { Project } from '../data/entities/project.entity';
 
 @Injectable()
 export class ObservationsService {
+  constructor(
+    @InjectRepository(Observation)
+    private readonly observationsRepository: Repository<Observation>,
+    @InjectRepository(Instrument)
+    private readonly instrumentRepository: Repository<Instrument>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(AstronomicalObject)
+    private readonly objectRepository: Repository<AstronomicalObject>,
+    @InjectRepository(Project)
+    private readonly projectsRepository: Repository<Project[]>,
+  ) { }
 
-    constructor(
+  async insertObservation(observation: ObservationInsertDTO) {
+    const observationToInsert: Observation = new Observation();
 
-        @InjectRepository(Observation)
-        private readonly observationsRepository: Repository<Observation>,
+    observationToInsert.date = observation.date;
+    observationToInsert.imagePath = observation.imagePath;
+    observationToInsert.instrument = await this.instrumentRepository.findOneOrFail({ where: { id: observation.instrumentId } });
+    observationToInsert.object = await this.objectRepository.findOneOrFail({ where: { id: observation.objectId } });
+    observationToInsert.observer = await this.userRepository.findOneOrFail({ where: { id: observation.observerId } });
+    observationToInsert.operator = await this.userRepository.findOneOrFail({ where: { id: observation.operatorId } });
+    observationToInsert.projects = Promise.resolve(await this.projectsRepository.findOne({ where: { id: observation.projectsId } }));
 
-        @InjectRepository(Instrument)
-        private readonly instrumentRepository: Repository<Instrument>,
+    this.objectRepository.create(observationToInsert);
+    await this.observationsRepository.save(observationToInsert);
 
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+    return observationToInsert;
+  }
 
-        @InjectRepository(AstronomicalObject)
-        private readonly objectRepository: Repository<AstronomicalObject>,
+  async getAll(): Promise<Observation[]> {
+    return await this.observationsRepository.find({
+      relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
+      order: { id: 'ASC' },
+    });
+  }
 
-        @InjectRepository(Project)
-        private readonly projectsRepository: Repository<Project[]>,
-    ) { }
-
-    async insertObservation(observation: ObservationInsertDTO) {
-        const observationToInsert: Observation = new Observation();
-
-        observationToInsert.date = observation.date;
-        observationToInsert.imagePath = observation.imagePath;
-        observationToInsert.instrument = await this.instrumentRepository.findOneOrFail({ where: { id: observation.instrumentId } });
-        observationToInsert.object = await this.objectRepository.findOneOrFail({ where: { id: observation.objectId } });
-        observationToInsert.observer = await this.userRepository.findOneOrFail({ where: { id: observation.observerId } });
-        observationToInsert.operator = await this.userRepository.findOneOrFail({ where: { id: observation.operatorId } });
-        observationToInsert.projects = Promise.resolve(await this.projectsRepository.findOne({ where: { id: observation.projectsId } }));
-
-        this.objectRepository.create(observationToInsert);
-        await this.observationsRepository.save(observationToInsert);
-
-        return observationToInsert;
-    }
-
-    async retrieveObservations() {
-        const retrievedObservations = await this.observationsRepository.find({
-            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
-            order: { id: 'ASC' },
-        });
-
-        if (!retrievedObservations) {
-            throw new NotFoundException('Unsuccessfully observations retrieve.');
-        }
-
-        return retrievedObservations;
-    }
-
-    async retrieveObservationById(id: number) {
-        const retrievedObservation = await this.observationsRepository.findOneOrFail({
-            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
-            where: { id },
-        });
-        return retrievedObservation;
-    }
-
-    async retrieveDateOfObservation(id: number) {
-        const retrievedObservation = await this.observationsRepository.findOneOrFail({
-            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
-            where: { id },
-        });
-
-        if (!retrievedObservation.date) {
-            throw new NotFoundException('Unsuccessfully try to retrieve the date of observation.');
-        }
-
-        return retrievedObservation.date;
-    }
-
-    async retrieveObjectOfObservation(id: number) {
-        const retrievedObservation = await this.observationsRepository.findOneOrFail({
-            relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
-            where: { id },
-        });
-
-        if (!retrievedObservation.object) {
-            throw new NotFoundException('Unsuccessfully try to retrieve the object in observation.');
-        }
-
-        return retrievedObservation.object;
-    }
-    async retrieveFilteredObservations(objectIdentifier: string) {
-        const retrievedFilteredObservations = await this.observationsRepository.find({
-            relations: ['instrument', 'observer', 'operator', 'objects', 'projects'],
-            where: { object: { identifier: objectIdentifier } },  // It is not working properly!
-            order: { id: 'ASC' },
-        });
-
-        if (!retrievedFilteredObservations) {
-            throw new NotFoundException('Unsuccessfully filtered observations retrieve.');
-        }
-
-        return retrievedFilteredObservations;
-    }
+  async getObservationById(id: number): Promise<Observation> {
+    return await this.observationsRepository.findOneOrFail({
+      relations: ['instrument', 'observer', 'operator', 'object', 'projects'],
+      where: { id },
+    });
+  }
 }

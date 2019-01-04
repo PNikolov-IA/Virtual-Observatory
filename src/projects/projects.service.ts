@@ -1,5 +1,5 @@
 import { ProjectAlterDTO } from './../models/project/project-alter.dto';
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from '../data/entities/project.entity';
@@ -7,76 +7,46 @@ import { ProjectInsertDTO } from '../models/project/project-insert.dto';
 
 @Injectable()
 export class ProjectsService {
+  constructor(
+    @InjectRepository(Project)
+    private readonly projectsRepository: Repository<Project>,
+  ) { }
 
-    constructor(
+  async getProjects(): Promise<Project[]> {
+    return await this.projectsRepository.find();
+  }
 
-        @InjectRepository(Project)
-        private readonly projectsRepository: Repository<Project>,
-    ) { }
+  async getProjectById(id: number): Promise<Project> {
+    return await this.projectsRepository.findOneOrFail({ where: { id } });
+  }
 
-    async getProjects(): Promise<Project[]> {
-        const foundProjects = await this.projectsRepository.find();
+  async insertProject(project: ProjectInsertDTO): Promise<Project> {
+    const foundProject: Project = await this.projectsRepository.findOne({ where: project.name });
 
-        if (!foundProjects) {
-            throw new NotFoundException('Unsuccessfully try to find the projects.');
-        }
-
-        return foundProjects;
+    if (foundProject) {
+      throw new Error('The project already exist.');
     }
 
-    async getProjectById(id: number): Promise<Project> {
-        const foundProject = await this.projectsRepository.findOne({ where: { id } });
+    const projectToInsert: Project = new Project();
 
-        if (!foundProject) {
-            throw new NotFoundException('Unsuccessfully try to find the project.');
-        }
+    projectToInsert.name = project.name;
+    projectToInsert.description = project.description;
 
-        return foundProject;
-    }
+    this.projectsRepository.create(projectToInsert);
+    await this.projectsRepository.save(projectToInsert);
 
-    async insertProject(project: ProjectInsertDTO): Promise<Project> {
-        const foundProject: Project = await this.projectsRepository.findOne({ where: project.name });
+    return projectToInsert;
+  }
 
-        if (foundProject) {
-            throw new BadRequestException('The project already exist.');
-        }
+  async alterProject(project: ProjectAlterDTO): Promise<Project> {
+    const foundProject: Project = await this.projectsRepository.findOneOrFail({ where: project.oldName });
 
-        const projectToInsert: Project = new Project();
-        projectToInsert.name = project.name;
-        if (project.description) {
-            projectToInsert.description = project.description;
-        }
+    foundProject.name = project.newName;
+    foundProject.description = project.description;
 
-        this.projectsRepository.create(projectToInsert);
-        const result = await this.projectsRepository.save(projectToInsert);
+    this.projectsRepository.create(foundProject);
+    await this.projectsRepository.save(foundProject);
 
-        if (!result) {
-            throw new BadRequestException('Unsuccessfully try to input the data.');
-        }
-
-        return projectToInsert;
-    }
-
-    async alterProject(project: ProjectAlterDTO): Promise<string> {
-        const foundProject: Project = await this.projectsRepository.findOne({ where: project.oldName });
-
-        if (foundProject) {
-            foundProject.name = project.newName;
-            if (project.description) {
-                foundProject.description = project.description;
-            }
-
-        } else {
-            throw new BadRequestException('No such project.');
-        }
-
-        this.projectsRepository.create(foundProject);
-        const result = await this.projectsRepository.save(foundProject);
-
-        if (!result) {
-            throw new BadRequestException('Unsuccessfully try to save the update project.');
-        }
-
-        return project.newName;
-    }
+    return foundProject;
+  }
 }

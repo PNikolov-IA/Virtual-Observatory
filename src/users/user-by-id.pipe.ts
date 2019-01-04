@@ -3,9 +3,9 @@ import { UsersService } from 'src/common/core/users.service';
 
 @Injectable()
 export class UserByIdPipe implements PipeTransform<string> {
-    constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) { }
 
-    transform(value: string, metadata: ArgumentMetadata) {
-        return parseInt(value, 10);
-    }
+  transform(value: string, metadata: ArgumentMetadata) {
+    return parseInt(value, 10);
+  }
 }

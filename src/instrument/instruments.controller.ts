@@ -1,52 +1,37 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Post, Body, Get, Param, ParseIntPipe, HttpCode, NotFoundException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InstrumentsService } from './instruments.service';
 import { InstrumentInsertDTO } from '../models/instrument/instrument-insert.dto';
+import { Instrument } from 'src/data/entities/instrument.entity';
 
 @Controller('instruments')
 export class InstrumentsController {
-
   constructor(
     private readonly instrumentsService: InstrumentsService,
   ) { }
 
   @Get()
   @UseGuards(AuthGuard())
-  async getAll(@Res() response): Promise<string> {
-    try {
-      const foundInstruments = await this.instrumentsService.getInstruments();
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find all instruments.', data: foundInstruments });
-
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
-    }
-
+  @HttpCode(HttpStatus.OK)
+  async getAll(): Promise<Instrument[]> {
+    return await this.instrumentsService.getInstruments();
   }
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
+  @HttpCode(HttpStatus.OK)
+  async getById(@Param('id', new ParseIntPipe()) id: number): Promise<Instrument> {
     try {
-      const foundInstrument = await this.instrumentsService.getInstrumentById(id);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully find instrument.', data: foundInstrument });
-
+      return await this.instrumentsService.getInstrumentById(id);
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
+      throw new NotFoundException('No such instrument.');
     }
   }
 
   @Post()
   @UseGuards(AuthGuard())
-  async insertInstrument(@Body() instrument: InstrumentInsertDTO, @Res() response): Promise<string> {
-    try {
-      const insertedInstrument = await this.instrumentsService.insertInstrument(instrument);
-      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedInstrument });
-
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
-    }
+  @HttpCode(HttpStatus.CREATED)
+  async insertInstrument(@Body() instrument: InstrumentInsertDTO): Promise<Instrument> {
+    return await this.instrumentsService.insertInstrument(instrument);
   }
 }

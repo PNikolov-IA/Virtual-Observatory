@@ -4,7 +4,6 @@ import { Observation } from './observation.entity';
 
 @Entity({ name: 'users' })
 export class User {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,9 +29,4 @@ export class User {
 
   @OneToMany(() => Observation, observation => observation.observer && observation.operator)
   observations: Observation[];
-
-  // @BeforeInsert()
-  // logUserInsertion() {
-
-  // }
 }

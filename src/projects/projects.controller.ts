@@ -1,70 +1,55 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Query, Param, Put, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller, UseGuards, HttpStatus, Post, Body, Get, Param, Put, ParseIntPipe, NotFoundException, HttpCode, ConflictException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ProjectsService } from './projects.service';
 import { ProjectInsertDTO } from '../models/project/project-insert.dto';
 import { ProjectAlterDTO } from '../models/project/project-alter.dto';
+import { Project } from 'src/data/entities/project.entity';
 
 @Controller('projects')
 export class ProjectsController {
-
   constructor(
     private readonly projectsService: ProjectsService,
   ) { }
 
   @Get()
   @UseGuards(AuthGuard())
-  async getAll(@Res() response): Promise<string> {
-
-    try {
-      const foundProjects = await this.projectsService.getProjects();
-      return response.status(HttpStatus.OK)
-        .json({ message: 'Successfully find all projects.', data: foundProjects });
-
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
-    }
+  @HttpCode(HttpStatus.OK)
+  async getAll(): Promise<Project[]> {
+    return await this.projectsService.getProjects();
   }
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
+  @HttpCode(HttpStatus.OK)
+  async getById(@Param('id', new ParseIntPipe()) id: number): Promise<Project> {
     try {
-      const foundProject = await this.projectsService.getProjectById(id);
-      return response.status(HttpStatus.OK)
-        .json({ message: 'Successfully find the project.', data: foundProject });
-
+      return await this.projectsService.getProjectById(id);
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
+      throw new NotFoundException('No such project.');
     }
   }
 
   @Post()
   @UseGuards(AuthGuard())
-  async insertProject(@Body() project: ProjectInsertDTO, @Res() response): Promise<string> {
+  @HttpCode(HttpStatus.CREATED)
+  async insertProject(@Body() project: ProjectInsertDTO): Promise<Project> {
     try {
-      const insertedProject = await this.projectsService.insertProject(project);
-      return response.status(HttpStatus.CREATED)
-        .json({ message: 'Successfully inserted.', data: insertedProject });
-
+      return await this.projectsService.insertProject(project);
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
+      throw new ConflictException('The project already exist.');
     }
   }
 
   @Put()
   @UseGuards(AuthGuard())
-  async alterProject(@Body() project: ProjectAlterDTO, @Res() response): Promise<string> {
+  @HttpCode(HttpStatus.OK)
+  async alterProject(@Body() project: ProjectAlterDTO): Promise<Project> {
     try {
-      const alteredProject = await this.projectsService.alterProject(project);
-      return response.status(HttpStatus.OK)
-        .json({ message: 'Successfully changed.', data: alteredProject });
-
+      return await this.projectsService.alterProject(project);
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
+      throw new NotFoundException('No such project.');
     }
   }
 }

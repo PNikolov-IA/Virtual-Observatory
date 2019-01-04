@@ -7,7 +7,6 @@ import { AstronomicalObject } from './object.entity';
 
 @Entity('observations')
 export class Observation {
-
     @PrimaryGeneratedColumn()
     id: number;
 

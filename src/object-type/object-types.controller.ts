@@ -1,74 +1,55 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Res, Get, Param, Put, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller, UseGuards, HttpStatus, Post, Body, Get, Param, Put, ParseIntPipe, HttpCode, NotFoundException, ConflictException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectTypesService } from './object-types.service';
 import { ObjectTypeInsertDTO } from '../models/objectType/object-type-insert.dto';
 import { ObjectTypeAlterDTO } from '../models/objectType/object-type-alter.dto';
+import { ObjectType } from 'src/data/entities/object-type.entity';
 
 @Controller('object-types')
 export class ObjectTypesController {
-    [x: string]: any;
-
   constructor(
     private readonly objectTypesService: ObjectTypesService,
-
   ) { }
 
   @Get()
   @UseGuards(AuthGuard())
-  async getAll(@Res() response): Promise<string> {
-
-    try {
-      const foundObjectTypes = await this.objectTypesService.getObjectTypes();
-      return response.status(HttpStatus.OK)
-        .json({ message: 'Successfully find all object types.', data: foundObjectTypes });
-
-    } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
-    }
+  @HttpCode(HttpStatus.OK)
+  async getAll(): Promise<ObjectType[]> {
+    return await this.objectTypesService.getObjectTypes();
   }
 
   @Get(':id')
   @UseGuards(AuthGuard())
-  async getById(@Param('id', new ParseIntPipe()) id: number, @Res() response): Promise<string> {
-
+  @HttpCode(HttpStatus.OK)
+  async getById(@Param('id', new ParseIntPipe()) id: number): Promise<ObjectType> {
     try {
-      const foundObjectType = await this.objectTypesService.getObjectTypeById(id);
-      return response.status(HttpStatus.OK)
-        .json({ message: 'Successfully find object type.', data: foundObjectType });
-
+      return await this.objectTypesService.getObjectTypeById(id);
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
+      throw new NotFoundException('No such object type.');
     }
   }
 
   @Post()
   @UseGuards(AuthGuard())
-  async insertObjectType(@Body() objectType: ObjectTypeInsertDTO, @Res() response): Promise<string> {
-
+  @HttpCode(HttpStatus.CREATED)
+  async insertObjectType(@Body() objectType: ObjectTypeInsertDTO): Promise<ObjectType> {
     try {
-      const insertedObjectType = await this.objectTypesService.insertObjectType(objectType);
-      return response.status(HttpStatus.CREATED).json({ message: 'Successfully inserted.', data: insertedObjectType });
-
+      return await this.objectTypesService.insertObjectType(objectType);
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
+      throw new ConflictException('The object type already exist.');
     }
   }
 
   @Put()
   @UseGuards(AuthGuard())
-  async alterObjectType(@Body() objectType: ObjectTypeAlterDTO, @Res() response): Promise<string> {
-
+  @HttpCode(HttpStatus.OK)
+  async alterObjectType(@Body() objectType: ObjectTypeAlterDTO): Promise<ObjectType> {
     try {
-      const alteredObjectType = await this.objectTypesService.alterObjectType(objectType);
-      return response.status(HttpStatus.OK).json({ message: 'Successfully changed.', data: alteredObjectType });
-
+      return await this.objectTypesService.alterObjectType(objectType);
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json(error.message);
-
+      throw new NotFoundException('No such object type.');
     }
-
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SpectralType } from '../data/entities/spectral-type.entity';
@@ -7,72 +7,46 @@ import { SpectralTypeAlterDTO } from '../models/spectralType/spectral-type-alter
 
 @Injectable()
 export class SpectralTypesService {
+  constructor(
+    @InjectRepository(SpectralType)
+    private readonly spectralTypesRepository: Repository<SpectralType>,
+  ) { }
 
-    constructor(
+  async getSpectralTypes(): Promise<SpectralType[]> {
+    return await this.spectralTypesRepository.find();
+  }
 
-        @InjectRepository(SpectralType)
-        private readonly spectralTypesRepository: Repository<SpectralType>,
-    ) { }
+  async getSpectralTypeById(id: number): Promise<SpectralType> {
+    return await this.spectralTypesRepository.findOneOrFail({ where: { id } });
+  }
 
-    async getSpectralTypes(): Promise<SpectralType[]> {
-        const foundSpectralTypes = await this.spectralTypesRepository.find();
+  async insertSpectralType(spectralType: SpectralTypeInsertDTO): Promise<SpectralType> {
+    const foundSpectralType: SpectralType = await this.spectralTypesRepository
+      .findOne({ where: spectralType.type });
 
-        if (!foundSpectralTypes) {
-            throw new NotFoundException('Unsuccessfully try to find the spectral types.');
-        }
-
-        return foundSpectralTypes;
+    if (foundSpectralType) {
+      throw new Error('The spectral type already exist.');
     }
 
-    async getSpectralTypeById(id: number): Promise<SpectralType> {
-        const foundSpectralType = await this.spectralTypesRepository.findOne({ where: { id } });
+    const spectralTypeToInsert: SpectralType = new SpectralType();
 
-        if (!foundSpectralType) {
-            throw new NotFoundException('Unsuccessfully try to find spectral type.');
-        }
+    spectralTypeToInsert.type = spectralType.type;
 
-        return foundSpectralType;
-    }
+    this.spectralTypesRepository.create(spectralTypeToInsert);
+    await this.spectralTypesRepository.save(spectralTypeToInsert);
 
-    async insertSpectralType(spectralType: SpectralTypeInsertDTO): Promise<SpectralType> {
-        const foundSpectralType: SpectralType = await this.spectralTypesRepository
-            .findOne({ where: spectralType.type });
+    return spectralTypeToInsert;
+  }
 
-        if (foundSpectralType) {
-            throw new BadRequestException('The spectral type already exist.');
-        }
+  async alterSpectralType(spectralType: SpectralTypeAlterDTO) {
+    const foundSpectralType: SpectralType = await this.spectralTypesRepository
+      .findOneOrFail({ where: spectralType.insertedType });
 
-        const spectralTypeToInsert: SpectralType = new SpectralType();
-        spectralTypeToInsert.type = spectralType.type;
+    foundSpectralType.type = spectralType.typeToAlter;
 
-        this.spectralTypesRepository.create(spectralTypeToInsert);
-        const result = await this.spectralTypesRepository.save(spectralTypeToInsert);
+    this.spectralTypesRepository.create(foundSpectralType);
+    await this.spectralTypesRepository.save(foundSpectralType);
 
-        if (!result) {
-            throw new BadRequestException('Unsuccessfully try to save the object type input.');
-        }
-
-        return spectralTypeToInsert;
-
-    }
-
-    async alterSpectralType(spectralType: SpectralTypeAlterDTO) {
-        const foundSpectralType: SpectralType = await this.spectralTypesRepository
-            .findOne({ where: spectralType.insertedType });
-
-        if (foundSpectralType) {
-            foundSpectralType.type = spectralType.typeToAlter;
-        } else {
-            throw new BadRequestException('No such spectral type.');
-        }
-
-        this.spectralTypesRepository.create(foundSpectralType);
-        const result = await this.spectralTypesRepository.save(foundSpectralType);
-
-        if (!result) {
-            throw new BadRequestException();
-        }
-
-        return spectralType.typeToAlter;
-    }
+    return foundSpectralType;
+  }
 }

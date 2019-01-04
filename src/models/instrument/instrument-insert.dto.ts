@@ -1,7 +1,6 @@
 import { IsString, Min, Length } from 'class-validator';
 
 export class InstrumentInsertDTO {
-
     @IsString()
     @Min(2)
     name: string;
