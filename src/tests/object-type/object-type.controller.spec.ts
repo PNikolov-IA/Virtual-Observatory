@@ -1,3 +1,4 @@
+import { ObjectTypeAlterDTO } from './../../models/objectType/object-type-alter.dto';
 import { ObjectTypesController } from './../../object-type/object-types.controller';
 import { ObjectTypesService } from './../../object-type/object-types.service';
 import { ObjectTypeInsertDTO } from '../../models/objectType/object-type-insert.dto';
@@ -118,6 +119,7 @@ describe('ObjectTypesController', () => {
             error: 'Not Found',
             message: 'No such object type.',
         });
+
         mockObjectTypesService = jest.fn<ObjectTypesService>().mockImplementation(() => ({
             getObjectTypeById: jest.fn()
                 .mockImplementation(() => { throw new Error(objRef); }),
@@ -214,8 +216,99 @@ describe('ObjectTypesController', () => {
         });
 
         mockObjectTypesService = jest.fn<ObjectTypesService>().mockImplementation(() => ({
-            insertObjectType: jest.fn()
-                .mockImplementation(() => { throw new Error(); }),
+            insertObjectType: jest.fn().mockReturnValue(() => { throw new Error(); }),
+        }));
+
+        const objectTypesService = new mockObjectTypesService();
+        const controller: ObjectTypesController = new ObjectTypesController(objectTypesService);
+
+        // Act
+        const result = await controller.insertObjectType(objType);
+
+        // Assert
+        expect(result).toThrowError();
+    });
+
+    it('should call ObjectTypesService with alterObjectType method once', async () => {
+        // Arrange
+        const objType: ObjectTypeAlterDTO = {
+            insertedType: 'star',
+            typeToAlter: 'planet',
+        };
+
+        mockObjectTypesService = jest.fn<ObjectTypesService>().mockImplementation(() => ({
+            alterObjectType: jest.fn().mockReturnValue(objType),
+        }));
+
+        const objectTypesService = new mockObjectTypesService();
+        const controller: ObjectTypesController = new ObjectTypesController(objectTypesService);
+
+        const spy: jest.SpyInstance = jest.spyOn(objectTypesService, 'alterObjectType');
+
+        // Act
+        await controller.alterObjectType(objType);
+
+        // Assert
+        expect(spy).toBeCalledTimes(1);
+    });
+
+    it('alterObjectType method should return the changed value', async () => {
+        // Arrange        //
+        const objType: ObjectTypeAlterDTO = {
+            insertedType: 'star',
+            typeToAlter: 'planet',
+        };
+
+        mockObjectTypesService = jest.fn<ObjectTypesService>().mockImplementation(() => ({
+            alterObjectType: jest.fn().mockReturnValue(objType.typeToAlter),
+        }));
+
+        const objectTypesService = new mockObjectTypesService();
+        const controller: ObjectTypesController = new ObjectTypesController(objectTypesService);
+
+        // Act
+        const result = await controller.alterObjectType(objType);
+
+        // Assert
+        expect(result).toBe(objType.typeToAlter);
+    });
+
+    it('alterObjectType method should throw error when the object type was not found', async () => {
+        // Arrange        //
+        const objType: ObjectTypeAlterDTO = {
+            insertedType: 'star',
+            typeToAlter: 'planet',
+        };
+
+        mockObjectTypesService = jest.fn<ObjectTypesService>().mockImplementation(() => ({
+            alterObjectType: jest.fn().mockReturnValue(() => { throw new Error(); }),
+        }));
+
+        const objectTypesService = new mockObjectTypesService();
+        const controller: ObjectTypesController = new ObjectTypesController(objectTypesService);
+
+        // Act
+        const result = await controller.alterObjectType(objType);
+
+        // Assert
+        expect(result).toThrowError();
+    });
+
+    it('alterObjectType method should throw the correct error message', async () => {
+        // Arrange        //
+        const objType: ObjectTypeAlterDTO = {
+            insertedType: 'star',
+            typeToAlter: 'planet',
+        };
+
+        const objRef: string = JSON.stringify({
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'No such object type.',
+        });
+
+        mockObjectTypesService = jest.fn<ObjectTypesService>().mockImplementation(() => ({
+            alterObjectType: jest.fn().mockImplementation(() => { throw new Error(objRef); }),
         }));
 
         const objectTypesService = new mockObjectTypesService();
@@ -223,7 +316,7 @@ describe('ObjectTypesController', () => {
 
         // Act & Assert
         try {
-            await controller.insertObjectType(objType);
+            await controller.alterObjectType(objType);
         } catch (e) {
             const error = JSON.stringify(e.message);
             expect(error).toBe(objRef);
