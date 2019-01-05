@@ -1,5 +1,5 @@
 import { AuthGuard } from '@nestjs/passport';
-import { Controller, Get, UseGuards, Param, HttpStatus, Put, HttpCode, NotFoundException } from '@nestjs/common';
+import { Controller, Get, UseGuards, Param, HttpStatus, Put, HttpCode, NotFoundException, Query } from '@nestjs/common';
 import { UsersService } from './../common/core/users.service';
 import { AdminGuard } from 'src/common';
 import { User } from 'src/data/entities/user.entity';
@@ -14,8 +14,12 @@ export class UsersController {
   @Get()
   @UseGuards(AuthGuard(), AdminGuard)
   @HttpCode(HttpStatus.OK)
-  async all(): Promise<User[]> {
+  async all(@Query() query): Promise<User[]> {
+    if (!Object.keys(query).length) {
       return await this.usersService.getAll();
+    } else {
+      return await this.usersService.getFilteredUsersByName(query.firstName);
+    }
   }
 
   @Get(':id')

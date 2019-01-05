@@ -60,6 +60,11 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
+  async getFilteredUsersByName(firstName: string) {
+    return await this.usersRepository
+      .find({ where: { firstName } });
+  }
+
   async getUserById(id: number): Promise<User> {
     return await this.usersRepository.findOneOrFail({ where: { id } });
   }
