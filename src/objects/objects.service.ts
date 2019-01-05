@@ -3,8 +3,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AstronomicalObject } from 'src/data/entities/object.entity';
 import { ObjectInsertDTO } from 'src/models/object/object-insert.dto';
-import { SpectralType } from 'src/data/entities/spectral-type.entity';
-import { ObjectType } from 'src/data/entities/object-type.entity';
 
 @Injectable()
 export class ObjectsService {

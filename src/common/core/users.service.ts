@@ -16,7 +16,7 @@ export class UsersService {
   ) { }
 
   async registerUser(user: UserRegisterDTO): Promise<User> {
-    const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
+    const userFound: User = await this.usersRepository.findOne({ where: { email: user.email } });
 
     if (userFound) {
       throw new Error('Email already in use.');
@@ -46,7 +46,7 @@ export class UsersService {
       .findOne({ select: ['email', 'password', 'isAdmin'], where: { email: user.email } });
 
     if (userFound) {
-      const result = await bcrypt.compare(user.password, userFound.password);
+      const result: boolean = await bcrypt.compare(user.password, userFound.password);
 
       if (result) {
         return userFound;
@@ -60,7 +60,7 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  async getUserById(id: number) {
+  async getUserById(id: number): Promise<User> {
     return await this.usersRepository.findOneOrFail({ where: { id } });
   }
 
