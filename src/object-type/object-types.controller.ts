@@ -1,5 +1,10 @@
+import { Length } from 'class-validator';
 import {
-  Controller, UseGuards, HttpStatus, Post, Body, Get, Param, Put, ParseIntPipe, HttpCode, NotFoundException, ConflictException,
+  Controller,
+  UseGuards,
+  HttpStatus, Post, Body, Get, Param, Put,
+  ParseIntPipe, HttpCode, NotFoundException,
+  ConflictException, InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectTypesService } from './object-types.service';
@@ -17,7 +22,11 @@ export class ObjectTypesController {
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
   async getAll(): Promise<ObjectType[]> {
-    return await this.objectTypesService.getObjectTypes();
+    try {
+      return await this.objectTypesService.getObjectTypes();
+    } catch (error) {
+      return await this.objectTypesService.getObjectTypes();
+    }
   }
 
   @Get(':id')

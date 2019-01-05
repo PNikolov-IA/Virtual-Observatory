@@ -16,7 +16,11 @@ export class ObjectsController {
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
   async getAll(): Promise<AstronomicalObject[]> {
-    return await this.objectsService.getObjects();
+    try {
+      return await this.objectsService.getObjects();
+    } catch (error) {
+      throw new NotFoundException('No object found.');
+    }
   }
 
   @Get(':id')
@@ -26,7 +30,7 @@ export class ObjectsController {
     try {
       return await this.objectsService.getObjectById(id);
     } catch (error) {
-      throw new NotFoundException('No such object.');
+      throw new NotFoundException('No such object type.');
     }
   }
 
