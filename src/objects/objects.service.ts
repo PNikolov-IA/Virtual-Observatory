@@ -11,10 +11,6 @@ export class ObjectsService {
   constructor(
     @InjectRepository(AstronomicalObject)
     private readonly objectsRepository: Repository<AstronomicalObject>,
-    @InjectRepository(ObjectType)
-    private readonly objectTypesRepository: Repository<ObjectType>,
-    @InjectRepository(SpectralType)
-    private readonly spectralTypesRepository: Repository<SpectralType>,
   ) { }
 
   async getObjects(): Promise<AstronomicalObject[]> {
@@ -26,7 +22,8 @@ export class ObjectsService {
   }
 
   async insertObject(object: ObjectInsertDTO): Promise<AstronomicalObject> {
-    const foundObject: AstronomicalObject = await this.objectsRepository.findOne({ where: object.identifier });
+    const foundObject: AstronomicalObject = await this.objectsRepository
+      .findOne({ where: { identifier: object.identifier } });
 
     if (foundObject) {
       throw new Error('The object already exist.');

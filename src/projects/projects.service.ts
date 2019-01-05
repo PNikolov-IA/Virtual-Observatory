@@ -39,7 +39,12 @@ export class ProjectsService {
   }
 
   async alterProject(project: ProjectAlterDTO): Promise<Project> {
-    const foundProject: Project = await this.projectsRepository.findOneOrFail({ where: project.oldName });
+    const foundProject: Project = await this.projectsRepository
+      .findOne({ where: { name: project.oldName } });
+
+    if (foundProject) {
+      throw new Error('The project already exist.');
+    }
 
     foundProject.name = project.newName;
     foundProject.description = project.description;
