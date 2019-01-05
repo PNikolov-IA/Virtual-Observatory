@@ -11,6 +11,7 @@ import { InstrumentsModule } from './instrument/instruments.module';
 import { ObjectTypesModule } from './object-type/object-types.module';
 import { SpectralTypesModule } from 'src/spectral-type/spectral-type.module';
 import { TestDataModule } from './load-test-data/test-data.module';
+import { ObjectsModule } from './objects/objects.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TestDataModule } from './load-test-data/test-data.module';
     SpectralTypesModule,
     ProjectsModule,
     TestDataModule,
+    ObjectsModule,
   ],
   controllers: [],
   providers: [],
