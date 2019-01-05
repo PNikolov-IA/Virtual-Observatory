@@ -5,7 +5,7 @@ import { UsersService } from 'src/common/core/users.service';
 export class UserByIdPipe implements PipeTransform<string> {
   constructor(private readonly usersService: UsersService) { }
 
-  transform(value: string, metadata: ArgumentMetadata) {
+  transform(value: string, metadata: ArgumentMetadata): number {
     return parseInt(value, 10);
   }
 }

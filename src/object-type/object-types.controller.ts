@@ -1,10 +1,5 @@
-import { Length } from 'class-validator';
 import {
-  Controller,
-  UseGuards,
-  HttpStatus, Post, Body, Get, Param, Put,
-  ParseIntPipe, HttpCode, NotFoundException,
-  ConflictException, InternalServerErrorException,
+  Controller, UseGuards, HttpStatus, Post, Body, Get, Param, Put, ParseIntPipe, HttpCode, NotFoundException, ConflictException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectTypesService } from './object-types.service';

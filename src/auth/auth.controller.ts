@@ -17,7 +17,7 @@ export class AuthController {
   async sign(@Body(new ValidationPipe({ transform: true, whitelist: true }))
   user: UserLoginDTO,
   ): Promise<string> {
-    const token = await this.authService.signIn(user);
+    const token: string = await this.authService.signIn(user);
 
     if (!token) {
       throw new BadRequestException('Wrong credentials.');

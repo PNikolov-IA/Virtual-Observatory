@@ -1,7 +1,7 @@
 import { JwtServiceMock } from './mocks/jwt.service.mock';
-import { UserLoginDTO } from '../models/user/user-login.dto';
-import { AuthController } from '../auth/auth.controller';
-import { UsersService } from '../common/core/users.service';
+import { UserLoginDTO } from '../../models/user/user-login.dto';
+import { AuthController } from '../../auth/auth.controller';
+import { UsersService } from '../../common/core/users.service';
 import { Test } from '@nestjs/testing';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from '../../auth/auth.service';
@@ -12,10 +12,8 @@ jest.mock('../common/core/users.service');
 describe('AuthController', () => {
   const authService: AuthService = new AuthService(null, null);
   let authCtrl: AuthController;
-  let jwtServiceMock: JwtServiceMock;
 
   beforeAll(async () => {
-    jwtServiceMock = new JwtServiceMock({});
     const module = await Test.createTestingModule({
       imports: [PassportModule.register({
         defaultStrategy: 'jwt',

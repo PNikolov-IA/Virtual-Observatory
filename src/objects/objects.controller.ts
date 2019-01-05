@@ -1,5 +1,5 @@
 import {
-  Controller, UseGuards, HttpStatus, Post, Body, Get, Param, Put, ParseIntPipe, HttpCode, NotFoundException, ConflictException,
+  Controller, UseGuards, HttpStatus, Post, Body, Get, Param, ParseIntPipe, HttpCode, NotFoundException, ConflictException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectsService } from './objects.service';
@@ -16,11 +16,7 @@ export class ObjectsController {
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
   async getAll(): Promise<AstronomicalObject[]> {
-    try {
-      return await this.objectsService.getObjects();
-    } catch (error) {
-      throw new NotFoundException('No object found.');
-    }
+    return await this.objectsService.getObjects();
   }
 
   @Get(':id')

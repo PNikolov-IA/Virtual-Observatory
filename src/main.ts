@@ -9,7 +9,6 @@ async function bootstrap() {
   app.use(cors());
   app.useStaticAssets(join(__dirname, '..', 'public'));
   await app.listen(app.get(ConfigService).port);
-
 }
 
 bootstrap();

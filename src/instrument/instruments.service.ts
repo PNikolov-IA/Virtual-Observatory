@@ -20,6 +20,13 @@ export class InstrumentsService {
   }
 
   async insertInstrument(instrument: InstrumentInsertDTO): Promise<Instrument> {
+    const foundInstrument: Instrument = await this.instrumentsRepository
+      .findOne({ where: { name: instrument.name } });
+
+    if (foundInstrument) {
+      throw new Error('The instrument already exist.');
+    }
+
     const instrumentToInsert: Instrument = new Instrument();
 
     instrumentToInsert.name = instrument.name;

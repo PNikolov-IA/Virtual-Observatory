@@ -22,7 +22,7 @@ export class SpectralTypesService {
 
   async insertSpectralType(spectralType: SpectralTypeInsertDTO): Promise<SpectralType> {
     const foundSpectralType: SpectralType = await this.spectralTypesRepository
-      .findOne({ where: spectralType.type });
+      .findOne({ where: { type: spectralType.type }});
 
     if (foundSpectralType) {
       throw new Error('The spectral type already exist.');

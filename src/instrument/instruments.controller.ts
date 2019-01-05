@@ -1,4 +1,6 @@
-import { Controller, UseGuards, HttpStatus, Post, Body, Get, Param, ParseIntPipe, HttpCode, NotFoundException } from '@nestjs/common';
+import {
+  Controller, UseGuards, HttpStatus, Post, Body, Get, Param, ParseIntPipe, HttpCode, NotFoundException, ConflictException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InstrumentsService } from './instruments.service';
 import { InstrumentInsertDTO } from '../models/instrument/instrument-insert.dto';
@@ -32,6 +34,10 @@ export class InstrumentsController {
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.CREATED)
   async insertInstrument(@Body() instrument: InstrumentInsertDTO): Promise<Instrument> {
-    return await this.instrumentsService.insertInstrument(instrument);
+    try {
+      return await this.instrumentsService.insertInstrument(instrument);
+    } catch (error) {
+      throw new ConflictException('The project already exist.');
+    }
   }
 }
