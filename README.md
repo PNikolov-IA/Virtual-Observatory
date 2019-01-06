@@ -1,4 +1,3 @@
-.
 ![logo](src/public/images/Crossplay.png)
 # VirtualObservatory by Crossplay
 ## Team details
