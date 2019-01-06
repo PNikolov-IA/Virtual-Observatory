@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AstronomicalObject } from 'src/data/entities/object.entity';
-import { ObjectInsertDTO } from 'src/models/object/object-insert.dto';
+import { AstronomicalObject } from '../data/entities/object.entity';
+import { ObjectInsertDTO } from '../models/object/object-insert.dto';
 
 @Injectable()
 export class ObjectsService {
