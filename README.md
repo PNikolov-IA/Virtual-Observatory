@@ -18,8 +18,9 @@
 - TypeORM
 - TSLint
 - GitLab
-- 
-### Project Information
+
+
+### Project Description:
     Open-source application written in Typescript.
     The project Virtual Observatory is a database storage 
     for astronomical observations and data acquiring/retrieving. 
@@ -29,12 +30,11 @@
     In the project were used Nestjs and TypeORM for a back-end logic, 
     and MariaDB/MySQL database servers for a relational database design.
     
-    
+### Project Information:
     This project is composed of:
     * public part - accessible without authentication
     * private part - available for registered users
     * administrative part - available for administrators only
-
-...
-### Project Description:
-...
+    
+### License
+This project is licensed under the MIT License
