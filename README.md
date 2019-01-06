@@ -33,8 +33,15 @@
 ### Project Information:
     This project is composed of:
     * public part - accessible without authentication
+        - Home page message, No data available; 
     * private part - available for registered users
+        - The user have to be registered and logged in.
+        - The users can add, update and extract data. 
+        - Limitations about specific data access and operations.  
     * administrative part - available for administrators only
+        - First registered user is admin by default.
+        - Admin can create users and to change their role.
+        - Admin has a full control over the data access and manipulation.
     
 ### License
 This project is licensed under the MIT License
