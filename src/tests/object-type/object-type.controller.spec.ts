@@ -209,12 +209,6 @@ describe('ObjectTypesController', () => {
         // Arrange
         const objType: ObjectTypeInsertDTO = { type: 'star' };
 
-        const objRef: string = JSON.stringify({
-            statusCode: 409,
-            error: 'Conflict',
-            message: 'The object type already exist.',
-        });
-
         mockObjectTypesService = jest.fn<ObjectTypesService>().mockImplementation(() => ({
             insertObjectType: jest.fn().mockReturnValue(() => { throw new Error(); }),
         }));
