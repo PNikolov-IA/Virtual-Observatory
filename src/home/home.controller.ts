@@ -4,7 +4,9 @@ import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 export class HomeController {
   @Get()
   @HttpCode(HttpStatus.OK)
-  home(): string {
-      return 'Virtual observatory home page. To access the data you need to login.';
+  home(): object {
+    return {
+      data: 'Virtual observatory home page. To access the data you need to login.',
+    };
   }
 }

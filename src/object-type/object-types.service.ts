@@ -22,7 +22,7 @@ export class ObjectTypesService {
 
   async insertObjectType(objectType: ObjectTypeInsertDTO): Promise<ObjectType> {
     const foundObjectType: ObjectType = await this.objectTypesRepository
-      .findOne({ where: objectType.type });
+      .findOne({ where: objectType });
 
     if (foundObjectType) {
       throw new Error('The object type already exist.');

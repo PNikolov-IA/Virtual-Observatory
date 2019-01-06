@@ -38,7 +38,7 @@ export class ObjectTypesController {
   @Post()
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.CREATED)
-  async insertObjectType(@Body() objectType: ObjectTypeInsertDTO): Promise<ObjectType> {
+  async addObjectType(@Body() objectType: ObjectTypeInsertDTO): Promise<ObjectType> {
     try {
       return await this.objectTypesService.insertObjectType(objectType);
     } catch (error) {
