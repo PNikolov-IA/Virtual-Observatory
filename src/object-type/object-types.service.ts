@@ -39,7 +39,7 @@ export class ObjectTypesService {
 
   async alterObjectType(objectType: ObjectTypeAlterDTO): Promise<ObjectType> {
     const foundObjectType: ObjectType = await this.objectTypesRepository
-      .findOneOrFail({ where: objectType.insertedType });
+      .findOneOrFail({ where: { objectType: objectType.insertedType } });
 
     foundObjectType.type = objectType.typeToAlter;
 
