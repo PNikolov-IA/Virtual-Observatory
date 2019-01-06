@@ -1,4 +1,5 @@
-![alt text](https://gitlab.com/Rosen-Ivanov/virtualobservatory/blob/master/src/public/images/Crossplay.png)
+.
+![logo](https://gitlab.com/Rosen-Ivanov/virtualobservatory/blob/master/src/public/images/Crossplay.png)
 # VirtualObservatory by Crossplay
 ## Team details
 ### Team name: 
