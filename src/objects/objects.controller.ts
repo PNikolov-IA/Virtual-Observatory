@@ -3,8 +3,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ObjectsService } from './objects.service';
-import { AstronomicalObject } from 'src/data/entities/object.entity';
-import { ObjectInsertDTO } from 'src/models/object/object-insert.dto';
+import { AstronomicalObject } from '../data/entities/object.entity';
+import { ObjectInsertDTO } from '../models/object/object-insert.dto';
 
 @Controller('objects')
 export class ObjectsController {
@@ -26,7 +26,7 @@ export class ObjectsController {
     try {
       return await this.objectsService.getObjectById(id);
     } catch (error) {
-      throw new NotFoundException('No such object type.');
+      throw new NotFoundException('No such object.');
     }
   }
 
